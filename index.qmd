@@ -565,7 +565,7 @@ alpha_immi_open <- psych::alpha(immi_open_data, check.keys = TRUE)$total$raw_alp
 Les deux formats produisent des structures factorielles comparables, avec une réduction systématique de la fiabilité pour le format ouvert.
 
 ::: {.fragment style="font-size: 0.8em; margin-top: 1em;"}
-**Note :** L'item sur les immigrants qui « prennent les emplois » a un poids factoriel très faible (0.216) dans le format ouvert, suggérant que cet enjeu est plus complexe et résiste à la simplification sur une seule échelle d'attitude anti-immigration.
+**Note :** L'item sur les immigrants qui « prennent les emplois » a un poids factoriel très faible (0.216) dans le format ouvert.
 :::
 
 :::
