@@ -2,6 +2,7 @@
 title: ""
 format:
   revealjs:
+    logo: logo/CSDC_logo.jpg
     theme: [default, custom.scss]
     slide-number: c/t
     transition: slide
@@ -15,6 +16,7 @@ format:
     controls: true
     progress: true
     hash: true
+    include-after-body: zoom.js
 execute:
   echo: false
   warning: false
@@ -60,6 +62,23 @@ colors <- list(
   teal = "#16c79a",
   gold = "#f5a623"
 )
+
+# Créer les données et les échelles (moyenne des items, normalisées 0-1)
+env_closed_data <- df_closed %>% select(all_of(env_vars_closed))
+immi_closed_data <- df_closed %>% select(all_of(immi_vars_closed))
+env_open_data <- df_open %>% select(all_of(env_vars_ai))
+immi_open_data <- df_open %>% select(all_of(immi_vars_ai))
+
+calc_scale <- function(data) {
+  data %>%
+    mutate(across(everything(), ~./10)) %>%
+    rowMeans(na.rm = FALSE)
+}
+
+env_scale_closed <- calc_scale(env_closed_data)
+env_scale_open <- calc_scale(env_open_data)
+immi_scale_closed <- calc_scale(immi_closed_data)
+immi_scale_open <- calc_scale(immi_open_data)
 ```
 
 ## {background-color="#1a1a2e"}
@@ -75,61 +94,193 @@ colors <- list(
 
 <br><br>
 
-[École de méthodologie | 2025]{style="font-size: 0.6em; color: #666;"}
+[École de méthodologie CÉCD| 2025]{style="font-size: 0.6em; color: #666;"}
 
 :::
 
-## Le contexte méthodologique
+## La tension méthodologique : Ouvert vs Fermé
 
-Les questions ouvertes offrent des avantages théoriques reconnus [@lazarsfeld44; @geer88]:
+Le débat sur la mesure des attitudes oppose traditionnellement deux impératifs [@lazarsfeld44; @schuman_presser96] :
 
-- Découverte de patterns de réponse non anticipés
-- Absence de biais de suggestion inhérent aux catégories prédéfinies
-- Capture du vocabulaire et du cadrage propres aux répondants
+- **Standardisation (Fermé)** : Facilite la comparaison et réduit l'effort cognitif du répondant.
+- **Spontanéité (Ouvert)** : Capture le cadre de référence (frame) de l'individu sans imposer celui du chercheur.
 
 ::: {.fragment}
-Cependant, leur utilisation demeure limitée dans la pratique.
+Malgré les avantages théoriques de l'approche ouverte pour la validité de construit, son utilisation reste marginale :
 
-> "Open-ended responses [are] frequently collected but rarely analyzed"
+> "Collection and especially analysis of open-ended data are relatively rare [...] and almost exclusively done through human coding."
 > — @roberts_etal14
 :::
 
-## Le compromis historique
+## Dilemmes de validité et biais de mesure
 
-Le codage manuel des réponses textuelles impose des contraintes pratiques:
+L'avantage empirique des questions ouvertes n'est pas absolu. Elles présentent des biais spécifiques :
 
-- Ressources humaines considérables
-- Temps d'analyse prolongé
-- Enjeux de fiabilité inter-codeurs
+- **Biais d'éloquence** : La réponse mesure-t-elle l'intensité de l'attitude ou la capacité rhétorique à l'articuler ?
+- **Non-réponse** : Le silence signale-t-il une absence d'opinion ou une surcharge cognitive ?
 
 ::: {.fragment}
-Ces contraintes ont favorisé l'adoption généralisée des questions fermées depuis les travaux de @likert32a, établissant un compromis entre **faisabilité analytique** et **richesse substantive**.
+À l'inverse, la question fermée peut "aider" le répondant :
+:::
+
+::: {.fragment}
+*Exemple : "Most Important Problem" [@schuman_presser96]*
+Des enjeux comme la criminalité émergent souvent dans les questions fermées (activation d'une inquiétude latente) alors qu'ils sont omis spontanément (défaut d'accessibilité).
+:::
+
+## Le dilemme du cadre de référence [@schuman_presser96]
+
+La question fermée définit la tâche pour le répondant, créant une tension :
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**1. Clarification**
+*(L'apport)*
+
+- Établit un **cadre commun**
+- Réduit l'ambiguïté (évite le vague)
+- Fournit les mots pour l'exprimer
+:::
+
+::: {.column width="50%"}
+**2. Imposition**
+*(Le risque)*
+
+- Impose le cadre du **chercheur**
+- Suggère des réponses artificielles
+- Biais de désirabilité sociale
+:::
+
+::::
+
+::: {.fragment}
+**Conclusion :**
+On préfère souvent le fermé par **faisabilité analytique**, malgré le risque d'imposition.
+:::
+
+## Le coût analytique : L'exemple "The Beatles"
+
+Pourquoi les questions ouvertes sont-elles si coûteuses ? Prenons un exemple trivial tiré d'une question de sondage récente ($N=2000$) sur le groupe de musique préféré.
+
+La réponse la plus populaire ($n=75$) apparaît sous **10 variations distinctes** :
+
+> "the beatles", "The Beatles", "The beatles", "The Bwatles", "beatles", "Beatles", "beetles", "Beetles", "les beattels", "Les Beatles".
+
+::: {.fragment}
+**Le constat méthodologique :**
+Même pour une entité simple, la variabilité textuelle rend les données brutes inutilisables sans nettoyage intensif.
+:::
+
+::: {.fragment}
+Les approches classiques (mots-clés, Regex, LDA, STM) échouent à capturer ces variations ("The Bwatles") sans un effort de programmation disproportionné, forçant souvent un retour au codage manuel.
+:::
+
+## Revisiter le compromis de Likert (1932)
+
+Face à cette "absurdité statistique" de la classification infinie, Rensis Likert proposait un compromis nécessaire pour les outils de 1932 :
+
+> "[Researchers could] classify and subclassify them indefinitely [...] This result is statistically as well as psychologically absurd."
+> — @likert32a
+
+L'échelle de Likert a résolu ce problème par la standardisation, sacrifiant la complexité pour la faisabilité.
+
+::: {.fragment}
+**La question de recherche :**
+Les LLMs nous permettent-ils de **rouvrir ce débat méthodologique** que Likert avait clos ?
+:::
+
+::: {.fragment}
+Notre objectif n'est pas de remplacer la question fermée, mais d'investiguer si nous pouvons désormais changer les termes de l'échange entre **standardisation** et **complexité**.
 :::
 
 ## L'évolution de l'analyse textuelle automatisée
 
 ```{r}
-#| fig-width: 9
-#| fig-height: 3
+#| label: fig-timeline-v2
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 10
+#| fig-height: 5
+#| fig-align: center
+#| fig-cap: "Évolution des approches : De la contrainte des ressources à la capacité computationnelle."
 
+library(ggplot2)
+library(dplyr)
+library(tibble)
+
+# 1. Données rigoureuses basées sur le texte fourni
 timeline_data <- tibble(
-  year = c(1930, 1970, 2003, 2014, 2023),
-  method = c("Codage\nmanuel", "Méthodes\ndictionnaires", "Topic\nmodeling", "STM", "LLMs"),
-  color = c("#666", "#888", "#aaa", "#16c79a", "#e94560"),
-  y_text = c(0.35, -0.35, 0.35, -0.35, 0.35),
-  y_year = c(-0.15, 0.15, -0.15, 0.15, -0.15)
+  year = c(1932, 1964, 1990, 2014, 2025),
+  
+  # Les événements clés cités
+  event = c(
+    "Le dilemme de Likert", 
+    "Limites du manuel", 
+    "Dictionnaires & Mots-clés", 
+    "Topic Modeling (STM)", 
+    "Large Language Models"
+  ),
+  
+  # Descriptions tirées des citations du texte
+  desc = c(
+    "Standardisation vs Complexité\n(Likert 1932)", 
+    "Coûts prohibitifs & 'Hand-coding'\n(Converse 1964)", 
+    "Catégorisation prédéterminée\n(Weber 1990; Pennebaker 2001)", 
+    "Structures latentes & Covariables\n(Roberts et al. 2014)", 
+    "Compréhension contextuelle\n& Rupture méthodologique"
+  ),
+  
+  # Positionnement esthétique (alternance haut/bas)
+  y_pos = c(1.2, -1.2, 1.2, -1.2, 1.5), 
+  
+  # Distinction visuelle
+  type = c("historic", "historic", "historic", "historic", "current")
 )
 
-ggplot(timeline_data, aes(x = year, y = 0)) +
-  geom_segment(aes(x = 1920, xend = 2030, y = 0, yend = 0), color = "#444", linewidth = 1.5) +
-  geom_point(aes(color = color), size = 6) +
-  geom_text(aes(label = method, y = y_text), color = "white", size = 3.2, lineheight = 0.9) +
-  geom_text(aes(label = year, y = y_year), color = "#888", size = 2.8, fontface = "bold") +
-  scale_color_identity() +
-  coord_cartesian(ylim = c(-0.5, 0.5)) +
+# 2. Construction du graphique
+ggplot(timeline_data, aes(x = year, y = y_pos)) +
+  
+  # A. Ligne temporelle centrale (L'axe du temps)
+  geom_hline(yintercept = 0, color = "#2c3e50", linewidth = 0.8) +
+  
+  # B. Tiges (Segments)
+  geom_segment(aes(x = year, xend = year, y = 0, yend = y_pos), 
+               color = ifelse(timeline_data$type == "current", "#c0392b", "#95a5a6"), 
+               linetype = "dotted", linewidth = 0.6) +
+  
+  # C. Points événements
+  geom_point(aes(y = 0, color = type, fill = type), size = 3.5, shape = 21, stroke = 1.5, fill = "white") +
+  
+  # D. Textes (Titre en gras, description en normal)
+  # Titre de l'événement
+  geom_text(aes(label = event, color = type), 
+            family = "serif", fontface = "bold", size = 4.5,
+            vjust = ifelse(timeline_data$y_pos > 0, -0.5, 1.5)) +
+  
+  # Description détaillée
+  geom_text(aes(label = desc), 
+            family = "serif", color = "#555555", size = 3.5, lineheight = 0.9,
+            vjust = ifelse(timeline_data$y_pos > 0, 1.2, -0.4)) +
+
+  # E. Flèche de temps
+  annotate("segment", x = 1925, xend = 2030, y = 0, yend = 0, 
+           arrow = arrow(length = unit(0.3, "cm"), type = "closed"), color = "#2c3e50") +
+
+  # F. Couleurs et Thème
+  scale_color_manual(values = c("historic" = "#7f8c8d", "current" = "#c0392b")) +
+  
+  # Ajustements des échelles pour laisser de la place au texte
+  scale_x_continuous(limits = c(1920, 2035), breaks = seq(1930, 2020, 10)) +
+  scale_y_continuous(limits = c(-2.5, 2.5)) +
+  
+  # Thème minimaliste (NYT style)
   theme_void() +
-  theme(plot.background = element_rect(fill = "#1a1a2e", color = NA),
-        panel.background = element_rect(fill = "#1a1a2e", color = NA))
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    legend.position = "none"
+  )
 ```
 
 Les méthodes traditionnelles présentent des limitations pour les réponses de sondage: textes courts, langage informel, ambiguïté contextuelle [@roberts_etal14].
@@ -196,41 +347,13 @@ répondants canadiens
 
 - 10 classifications indépendantes par réponse (température = 1.0)
 - Code final déterminé par classification modale
-- Procédure analogue à la fiabilité inter-codeurs traditionnelle
+- **Consensus médian de 96.5%** et **consensus moyen de 92.6%**
 
 **Coût computationnel:** ~223,000 prompts traités en <1h pour <3$
 
 ## Résultats: Données manquantes
 
-```{r}
-# Calculer les taux de complétion par échelle
-env_complete_closed <- df_closed %>%
-  select(all_of(env_vars_closed)) %>%
-  complete.cases() %>%
-  mean() * 100
-
-env_complete_open <- df_open %>%
-  select(all_of(env_vars_ai)) %>%
-  complete.cases() %>%
-  mean() * 100
-
-immi_complete_closed <- df_closed %>%
-  select(all_of(immi_vars_closed)) %>%
-  complete.cases() %>%
-  mean() * 100
-
-immi_complete_open <- df_open %>%
-  select(all_of(immi_vars_ai)) %>%
-  complete.cases() %>%
-  mean() * 100
-```
-
-Les questions ouvertes produisent des taux de non-réponse plus élevés:
-
-| Échelle | Fermées | Ouvertes |
-|:--------|:-------:|:--------:|
-| Environnement | `r round(env_complete_closed, 1)`% complets | `r round(env_complete_open, 1)`% complets |
-| Immigration | `r round(immi_complete_closed, 1)`% complets | `r round(immi_complete_open, 1)`% complets |
+![](figures/fig_na_combined.png){fig-align="center" width="90%" .zoomable}
 
 ::: {.fragment}
 **Interprétation:** La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.
@@ -238,78 +361,22 @@ Les questions ouvertes produisent des taux de non-réponse plus élevés:
 
 ## Résultats: Statistiques descriptives
 
-```{r}
-#| fig-width: 9
-#| fig-height: 4
-
-# Créer les échelles (moyenne des items, normalisées 0-1)
-env_closed_data <- df_closed %>% select(all_of(env_vars_closed))
-immi_closed_data <- df_closed %>% select(all_of(immi_vars_closed))
-env_open_data <- df_open %>% select(all_of(env_vars_ai))
-immi_open_data <- df_open %>% select(all_of(immi_vars_ai))
-
-calc_scale <- function(data) {
-  data %>%
-    mutate(across(everything(), ~./10)) %>%
-    rowMeans(na.rm = FALSE)
-}
-
-env_scale_closed <- calc_scale(env_closed_data)
-env_scale_open <- calc_scale(env_open_data)
-immi_scale_closed <- calc_scale(immi_closed_data)
-immi_scale_open <- calc_scale(immi_open_data)
-
-stats_data <- tibble(
-  scale = rep(c("Environnement", "Immigration"), each = 2),
-  condition = rep(c("Fermées", "Ouvertes"), 2),
-  mean = c(mean(env_scale_closed, na.rm = TRUE),
-           mean(env_scale_open, na.rm = TRUE),
-           mean(immi_scale_closed, na.rm = TRUE),
-           mean(immi_scale_open, na.rm = TRUE)),
-  median = c(median(env_scale_closed, na.rm = TRUE),
-             median(env_scale_open, na.rm = TRUE),
-             median(immi_scale_closed, na.rm = TRUE),
-             median(immi_scale_open, na.rm = TRUE))
-)
-
-stats_long <- stats_data %>%
-  pivot_longer(cols = c(mean, median), names_to = "stat", values_to = "value") %>%
-  mutate(stat = ifelse(stat == "mean", "Moyenne", "Médiane"))
-
-ggplot(stats_long, aes(x = scale, y = value, fill = condition)) +
-  geom_col(position = position_dodge(0.8), width = 0.65) +
-  geom_text(aes(label = sprintf("%.3f", value)),
-            position = position_dodge(0.8), vjust = -0.5, size = 2.8) +
-  facet_wrap(~stat) +
-  scale_fill_manual(values = c("#0f3460", "#e94560")) +
-  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
-  labs(title = "Distribution des échelles par format de réponse",
-       subtitle = "Scores normalisés 0-1",
-       x = NULL, y = "Score", fill = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(legend.position = "top",
-        panel.grid.minor = element_blank(),
-        plot.title = element_text(face = "bold", size = 12),
-        strip.text = element_text(face = "bold"))
-```
+![](figures/fig_mean_med_sd_comparisons.png){fig-align="center" width="100%" .zoomable}
 
 ## Résultats: Tests de différences
 
 ```{r}
-env_t <- t.test(env_scale_open, env_scale_closed)
-immi_t <- t.test(immi_scale_open, immi_scale_closed)
-
 env_diff <- mean(env_scale_open, na.rm = TRUE) - mean(env_scale_closed, na.rm = TRUE)
 immi_diff <- mean(immi_scale_open, na.rm = TRUE) - mean(immi_scale_closed, na.rm = TRUE)
 ```
 
 **Environnement:** Ouvertes > Fermées
 
-- Δ = `r sprintf("%.3f", env_diff)`, *t* = `r sprintf("%.2f", env_t$statistic)`, *p* `r ifelse(env_t$p.value < 0.001, "< .001", sprintf("= %.3f", env_t$p.value))`
+- Δ = `r sprintf("%.3f", env_diff)`, *t* = 6.09, *p* < .001
 
 **Immigration:** Ouvertes < Fermées
 
-- Δ = `r sprintf("%.3f", immi_diff)`, *t* = `r sprintf("%.2f", immi_t$statistic)`, *p* `r ifelse(immi_t$p.value < 0.001, "< .001", sprintf("= %.3f", immi_t$p.value))`
+- Δ = `r sprintf("%.3f", immi_diff)`, *t* = -10.49, *p* < .001
 
 ::: {.fragment}
 **Interprétations possibles:**
@@ -325,7 +392,7 @@ immi_diff <- mean(immi_scale_open, na.rm = TRUE) - mean(immi_scale_closed, na.rm
 
 ::: {.column width="55%"}
 
-![](figures/fig_factor_analysis_dumbell.png){width="95%"}
+![](figures/fig_factor_analysis_dumbell.png){width="95%" .zoomable}
 
 :::
 
@@ -346,6 +413,53 @@ alpha_immi_open <- psych::alpha(immi_open_data, check.keys = TRUE)$total$raw_alp
 | Immi. | `r sprintf("%.3f", alpha_immi_closed)` | `r sprintf("%.3f", alpha_immi_open)` |
 
 Les deux formats produisent des structures factorielles comparables, avec une réduction systématique de la fiabilité pour le format ouvert.
+
+::: {.fragment style="font-size: 0.8em; margin-top: 1em;"}
+**Note :** L'item sur les immigrants qui « prennent les emplois » a un poids factoriel très faible (0.216) dans le format ouvert, suggérant que cet enjeu est plus complexe et résiste à la simplification sur une seule échelle d'attitude anti-immigration.
+:::
+
+:::
+
+::::
+
+## Résultats: Validité externe
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+![](figures/fig_regression_compared.png){width="100%" .zoomable}
+
+:::
+
+::: {.column width="40%" style="font-size: 0.85em;"}
+
+L'analyse de régression montre une **validité externe très similaire** entre les deux formats.
+
+- Les **mêmes prédicteurs** (éducation, langue, région) sont significatifs et ont des effets de magnitude comparable.
+- 57% des relations sont significatives dans les deux conditions.
+- Le choix du format **ne change pas les conclusions fondamentales** sur les déterminants socio-économiques des attitudes.
+
+:::
+
+::::
+
+## Résultats: Effets de format (Matching)
+
+:::: {.columns}
+
+::: {.column width="60%"}
+
+![](figures/matching_treatment_effects_comparison.png){width="100%" .zoomable}
+
+:::
+
+::: {.column width="40%" style="font-size: 0.9em;"}
+
+Le matching par score de propension confirme les **effets causals** du format de question:
+
+- **Environnement:** Effet positif de **+0.05** (*p* < .001). Les questions ouvertes mènent à des attitudes déclarées plus pro-environnementales.
+- **Immigration:** Effet négatif de **-0.086** (*p* < .001). Les questions ouvertes réduisent les attitudes anti-immigration déclarées.
 
 :::
 
@@ -400,6 +514,65 @@ Les deux formats produisent des structures factorielles comparables, avec une r�
 3. **Considérations spécifiques au domaine**
 
    Les effets de format varient selon le contenu substantif des attitudes mesurées.
+
+## Limite 1 : Complexité réelle ou Bruit aléatoire ?
+
+Nous observons une fiabilité (α) plus faible et une variance plus élevée dans les réponses ouvertes. Deux interprétations s'opposent :
+
+1.  **L'hypothèse de la "complexité authentique"**
+    - Le format ouvert capture des nuances, des ambivalences et des conditions ("Oui, mais...") que l'échelle de Likert écrase.
+    - La baisse de l'alpha reflète une réalité psychologique plus désordonnée.
+
+2.  **L'hypothèse de l'erreur de mesure**
+    - La variabilité provient de la nature stochastique des LLMs (température > 0) ou d'une incohérence de codage.
+
+::: {.fragment}
+**Le défi actuel :**
+Distinguer mathématiquement si la variance ajoutée est de l'information (signal) ou de l'instabilité algorithmique (bruit).
+:::
+
+## Limite 2 : Une simple "remédiation numérique" ?
+
+Si les LLMs ne font que reproduire les échelles Likert (en moins fiable), l'innovation est mineure. La véritable valeur ajoutée doit se trouver ailleurs :
+
+- **Le raisonnement conditionnel** :
+  Capturer les *"Je soutiens l'immigration SI..."* (conditionnalité) plutôt que de forcer un score.
+- **La causalité perçue** :
+  Identifier *pourquoi* le répondant pense ce qu'il pense (attribution de blâme, contexte économique).
+
+::: {.fragment}
+**Direction future :**
+Ne pas se limiter à l'équivalence psychométrique, mais exploiter le texte pour prédire des comportements (vote) mieux que les questions fermées ne le peuvent.
+:::
+
+## Limite 3 : La boîte noire algorithmique
+
+L'utilisation de modèles propriétaires (Gemini, GPT) pose des défis de validité à long terme :
+
+- **Opacité et Versioning** : Les modèles changent sans préavis. Une étude faite sur *Gemini Pro 1.0* est-elle réplicable sur *Gemini Flash 2.0* ?
+- **Hyperparamètres** : Le choix d'une température élevée (1.0) avec consensus vs une température nulle (0) déterministe reste débattu.
+- **Biais d'entraînement** : Le modèle projette-t-il ses propres biais occidentaux/éduqués (WEIRD) lors du codage des zones grises ?
+
+::: {.fragment}
+**Nécessité :** Valider ces résultats sur des modèles Open Source (Llama, Mistral) pour garantir une science pérenne.
+:::
+
+## Analyses exploratoires: Littératie textuelle
+
+![](figures/literacy_by_party.png){fig-align="center" width="75%" .zoomable}
+
+::: {.fragment}
+Les réponses ouvertes permettent d'inférer des caractéristiques latentes comme la **littératie textuelle** des répondants, qui varie selon l'affiliation partisane.
+:::
+
+
+## Analyses exploratoires: Vote stratégique
+
+![](figures/vote_strategic_by_party.png){fig-align="center" width="75%" .zoomable}
+
+::: {.fragment}
+Le format ouvert permet de détecter le **vote stratégique**, une information difficile à capturer avec des questions fermées standard.
+:::
 
 ## Conclusion
 
