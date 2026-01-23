@@ -176,6 +176,51 @@ Même pour une entité simple, la variabilité textuelle rend les données brute
 Les approches classiques (mots-clés, Regex, LDA, STM) échouent à capturer ces variations ("The Bwatles") sans un effort de programmation disproportionné, forçant souvent un retour au codage manuel.
 :::
 
+## {background-color="#0f3460"}
+
+::: {style="text-align: center;"}
+
+[Exercice: Codez ces réponses]{style="font-size: 1.5em; font-weight: 700; color: white;"}
+
+:::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {style="background: white; color: black; padding: 1.2em; border-radius: 10px; margin: 0.5em; font-size: 0.85em;"}
+**Q: Êtes-vous favorable à plus d'immigration?**
+
+1. *"Ça dépend d'où ils viennent"*
+2. *"Oui mais pas trop vite"*
+3. *"Non, y'en a assez"*
+4. *"On devrait aider les réfugiés"*
+5. *"Les immigrants volent nos jobs"*
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment}
+
+::: {style="background: #e94560; padding: 1.2em; border-radius: 10px; color: white; margin: 0.5em;"}
+
+**Le défi du codeur:**
+
+- Quelle échelle? (1-5? 1-10?)
+- "Ça dépend" = neutre ou manquant?
+- Réponse 4 = pro-immigration?
+- Comment gérer la conditionnalité?
+
+:::
+
+:::
+
+:::
+
+::::
+
 ## Revisiter le compromis de Likert (1932)
 
 Face à cette "absurdité statistique" de la classification infinie, Rensis Likert proposait un compromis nécessaire pour les outils de 1932 :
@@ -386,6 +431,46 @@ immi_diff <- mean(immi_scale_open, na.rm = TRUE) - mean(immi_scale_closed, na.rm
 3. Biais potentiel introduit par le codage LLM
 :::
 
+## {background-color="#1a1a2e"}
+
+::: {style="text-align: center;"}
+
+[Question de discussion]{style="font-size: 1.3em; font-weight: 600; color: #aaa;"}
+
+<br>
+
+[Pourquoi les réponses ouvertes montrent-elles des attitudes **plus pro-environnementales** mais **moins anti-immigration**?]{style="font-size: 1.4em; color: white; line-height: 1.4;"}
+
+:::
+
+:::: {.columns style="margin-top: 2em;"}
+
+::: {.column width="33%"}
+::: {.fragment style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;"}
+**Hypothèse 1**
+
+Désirabilité sociale différenciée selon le sujet?
+:::
+:::
+
+::: {.column width="33%"}
+::: {.fragment style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;"}
+**Hypothèse 2**
+
+Biais du LLM dans le codage?
+:::
+:::
+
+::: {.column width="33%"}
+::: {.fragment style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;"}
+**Hypothèse 3**
+
+Les échelles fermées "suggèrent" des positions extrêmes?
+:::
+:::
+
+::::
+
 ## Résultats: Analyse factorielle
 
 :::: {.columns}
@@ -573,6 +658,75 @@ Les réponses ouvertes permettent d'inférer des caractéristiques latentes comm
 ::: {.fragment}
 Le format ouvert permet de détecter le **vote stratégique**, une information difficile à capturer avec des questions fermées standard.
 :::
+
+## Comment détecte-t-on le vote stratégique?
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+::: {style="background: #f8f9fa; border-left: 4px solid #DA020E; padding: 1em; border-radius: 8px; margin-bottom: 1em;"}
+
+**Réponse brute du répondant:**
+
+*"I was trying to vote strategically against a conservative incumbent in a very safe seat. Regardless of party affiliation, he's useless as an MP."*
+
+:::
+
+::: {.fragment style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 8px; color: white;"}
+
+**Analyse LLM:**
+
+- **Parti détecté:** Liberal
+- **Vote stratégique:** ✓ Oui
+- **Indicateurs:** "strategically", "against conservative"
+
+:::
+
+:::
+
+::: {.column width="48%"}
+
+::: {style="background: #f8f9fa; border-left: 4px solid #DA020E; padding: 1em; border-radius: 8px; margin-bottom: 1em;"}
+
+**Réponse brute du répondant:**
+
+*"Libéral (stratégique pour empêcher les Conservateurs)"*
+
+:::
+
+::: {.fragment style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 8px; color: white;"}
+
+**Analyse LLM:**
+
+- **Parti détecté:** Liberal
+- **Vote stratégique:** ✓ Oui
+- **Indicateurs:** "stratégique", "empêcher"
+
+:::
+
+:::
+
+::::
+
+::: {.fragment style="text-align: center; margin-top: 0.8em; font-size: 0.85em; color: #666;"}
+Ces nuances seraient perdues avec une question fermée: *"Pour quel parti avez-vous voté?"*
+:::
+
+## {background-color="#0f3460"}
+
+::: {style="text-align: center;"}
+
+[Réflexion collective]{style="font-size: 1.3em; font-weight: 600; color: #16c79a;"}
+
+<br>
+
+[Feriez-vous confiance à un LLM pour coder vos données de sondage?]{style="font-size: 1.5em; color: white;"}
+
+:::
+
+
+::::
 
 ## Conclusion
 
