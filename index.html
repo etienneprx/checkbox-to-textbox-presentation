@@ -531,43 +531,143 @@ Figure&nbsp;1: Évolution des approches : De la contrainte des ressources à la 
 </ul>
 <p><strong>Coût computationnel:</strong> ~223,000 prompts traités en &lt;1h pour &lt;3$</p>
 </section>
-<section id="résultats-données-manquantes" class="slide level2 center">
-<h2>Résultats: Données manquantes</h2>
-
-<img data-src="figures/fig_na_combined.png" class="zoomable quarto-figure quarto-figure-center r-stretch" style="width:90.0%"><div class="fragment">
-<p><strong>Interprétation:</strong> La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.</p>
+<section id="pipeline-de-codage-llm" class="slide level2 center">
+<h2>Pipeline de codage LLM</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div style="font-size: 0.85em;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Étape</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>1</strong></td>
+<td style="text-align: left;">Réponse ouverte: <em>“Un peu moins”</em></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>2</strong></td>
+<td style="text-align: left;">Envoi au LLM avec prompt spécialisé</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>3</strong></td>
+<td style="text-align: left;">10 classifications indépendantes (temp = 1.0)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>4</strong></td>
+<td style="text-align: left;">Vote majoritaire → <strong>Code: 4</strong></td>
+</tr>
+</tbody>
+</table>
 </div>
+</div><div class="column" style="width:45%;">
+<div style="background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); padding: 1em; border-radius: 8px; color: white; font-size: 0.7em;">
+<p><strong>Le prompt contient:</strong></p>
+<ul>
+<li>Rôle d’expert en codage de sondages</li>
+<li>Instructions bilingues (FR/EN)</li>
+<li>Question originale du sondage</li>
+<li><strong>Mêmes catégories Likert que le format fermé</strong></li>
+<li>Réponse textuelle à coder</li>
+</ul>
+</div>
+<div class="fragment" style="background: #16c79a; padding: 0.8em; border-radius: 8px; color: white; font-size: 0.75em; margin-top: 0.5em;">
+<p><strong>Point clé:</strong> Le LLM code sur les <strong>mêmes échelles</strong> que les questions fermées → comparabilité directe</p>
+</div>
+</div></div>
 </section>
 <section id="items-des-échelles-attitudinales" class="slide level2 center">
 <h2>Items des échelles attitudinales</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.75em;">
+<div style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.68em;">
 <p><strong>Environnement (7 items)</strong></p>
-<ol type="1">
-<li>Federal government spending on environment</li>
-<li>Stricter environmental regulation (even if higher prices)</li>
-<li>Jobs vs environment priority</li>
-<li>Main cause of climate change</li>
-<li>Government support for oil industry</li>
-<li>Climate change threat is exaggerated</li>
-<li>Federal carbon tax should be maintained</li>
-</ol>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Item</th>
+<th style="text-align: center;">Likert</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Dépenses fédérales environnement</td>
+<td style="text-align: center;">3 pts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Réglementation environnementale stricte</td>
+<td style="text-align: center;">5 pts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Priorité emplois vs environnement</td>
+<td style="text-align: center;">5 pts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cause changement climatique</td>
+<td style="text-align: center;">2 pts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Soutien industrie pétrolière</td>
+<td style="text-align: center;">5 pts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Menace climatique exagérée</td>
+<td style="text-align: center;">4 pts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Maintien taxe carbone</td>
+<td style="text-align: center;">4 pts</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div><div class="column" style="width:50%;">
-<div style="background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.75em;">
+<div style="background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.68em;">
 <p><strong>Immigration (5 items)</strong></p>
-<ol type="1">
-<li>Immigrants don’t want to fit in Canadian society</li>
-<li>Immigrants take jobs away from Canadians</li>
-<li>Federal spending on immigrants/minorities</li>
-<li>Number of immigrants to admit</li>
-<li>Strengthen border controls for refugees</li>
-</ol>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Item</th>
+<th style="text-align: center;">Likert</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Immigrants ne veulent pas s’intégrer</td>
+<td style="text-align: center;">5 pts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Immigrants prennent les emplois</td>
+<td style="text-align: center;">5 pts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dépenses fédérales immigrants</td>
+<td style="text-align: center;">3 pts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nombre d’immigrants à admettre</td>
+<td style="text-align: center;">5 pts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Contrôles frontaliers réfugiés</td>
+<td style="text-align: center;">4 pts</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div></div>
-<div style="text-align: center; margin-top: 1em; font-size: 0.85em; color: #666;">
-<p>Tous les items mesurés sur échelles 0-10 (fermées) ou codés 0-10 par LLM (ouvertes)</p>
+<div style="text-align: center; margin-top: 0.8em; font-size: 0.8em; color: #666;">
+<p>Tous les items normalisés sur échelle 0-1 | Scores élevés = attitudes pro-environnement / anti-immigration</p>
+</div>
+</section>
+<section id="résultats-données-manquantes" class="slide level2 center">
+<h2>Résultats: Données manquantes</h2>
+
+<img data-src="figures/fig_na_combined.png" class="zoomable quarto-figure quarto-figure-center r-stretch" style="width:90.0%"><div class="fragment">
+<p><strong>Interprétation:</strong> La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.</p>
 </div>
 </section>
 <section id="résultats-statistiques-descriptives" class="slide level2 center">

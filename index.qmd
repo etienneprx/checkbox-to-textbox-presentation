@@ -397,47 +397,42 @@ répondants canadiens
 
 **Coût computationnel:** ~223,000 prompts traités en <1h pour <3$
 
-## Résultats: Données manquantes
-
-![](figures/fig_na_combined.png){fig-align="center" width="90%" .zoomable}
-
-::: {.fragment}
-**Interprétation:** La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.
-:::
-
-## Items des échelles attitudinales
+## Pipeline de codage LLM
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 
-::: {style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.75em;"}
+::: {style="font-size: 0.85em;"}
 
-**Environnement (7 items)**
-
-1. Federal government spending on environment
-2. Stricter environmental regulation (even if higher prices)
-3. Jobs vs environment priority
-4. Main cause of climate change
-5. Government support for oil industry
-6. Climate change threat is exaggerated
-7. Federal carbon tax should be maintained
+| Étape | Description |
+|:-----:|:------------|
+| **1** | Réponse ouverte: *"Un peu moins"* |
+| **2** | Envoi au LLM avec prompt spécialisé |
+| **3** | 10 classifications indépendantes (temp = 1.0) |
+| **4** | Vote majoritaire → **Code: 4** |
 
 :::
 
 :::
 
-::: {.column width="50%"}
+::: {.column width="45%"}
 
-::: {style="background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.75em;"}
+::: {style="background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); padding: 1em; border-radius: 8px; color: white; font-size: 0.7em;"}
 
-**Immigration (5 items)**
+**Le prompt contient:**
 
-1. Immigrants don't want to fit in Canadian society
-2. Immigrants take jobs away from Canadians
-3. Federal spending on immigrants/minorities
-4. Number of immigrants to admit
-5. Strengthen border controls for refugees
+- Rôle d'expert en codage de sondages
+- Instructions bilingues (FR/EN)
+- Question originale du sondage
+- **Mêmes catégories Likert que le format fermé**
+- Réponse textuelle à coder
+
+:::
+
+::: {.fragment style="background: #16c79a; padding: 0.8em; border-radius: 8px; color: white; font-size: 0.75em; margin-top: 0.5em;"}
+
+**Point clé:** Le LLM code sur les **mêmes échelles** que les questions fermées → comparabilité directe
 
 :::
 
@@ -445,8 +440,60 @@ répondants canadiens
 
 ::::
 
-::: {style="text-align: center; margin-top: 1em; font-size: 0.85em; color: #666;"}
-Tous les items mesurés sur échelles 0-10 (fermées) ou codés 0-10 par LLM (ouvertes)
+## Items des échelles attitudinales
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.68em;"}
+
+**Environnement (7 items)**
+
+| Item | Likert |
+|:-----|:------:|
+| Dépenses fédérales environnement | 3 pts |
+| Réglementation environnementale stricte | 5 pts |
+| Priorité emplois vs environnement | 5 pts |
+| Cause changement climatique | 2 pts |
+| Soutien industrie pétrolière | 5 pts |
+| Menace climatique exagérée | 4 pts |
+| Maintien taxe carbone | 4 pts |
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {style="background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.68em;"}
+
+**Immigration (5 items)**
+
+| Item | Likert |
+|:-----|:------:|
+| Immigrants ne veulent pas s'intégrer | 5 pts |
+| Immigrants prennent les emplois | 5 pts |
+| Dépenses fédérales immigrants | 3 pts |
+| Nombre d'immigrants à admettre | 5 pts |
+| Contrôles frontaliers réfugiés | 4 pts |
+
+:::
+
+:::
+
+::::
+
+::: {style="text-align: center; margin-top: 0.8em; font-size: 0.8em; color: #666;"}
+Tous les items normalisés sur échelle 0-1 | Scores élevés = attitudes pro-environnement / anti-immigration
+:::
+
+## Résultats: Données manquantes
+
+![](figures/fig_na_combined.png){fig-align="center" width="90%" .zoomable}
+
+::: {.fragment}
+**Interprétation:** La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.
 :::
 
 ## Résultats: Statistiques descriptives
