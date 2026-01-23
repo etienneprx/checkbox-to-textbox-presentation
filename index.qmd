@@ -17,6 +17,7 @@ format:
     progress: true
     hash: true
     include-after-body: zoom.js
+    output-dir: docs
 execute:
   echo: false
   warning: false

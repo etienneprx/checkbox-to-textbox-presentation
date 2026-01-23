@@ -420,6 +420,37 @@
 <p>Les approches classiques (mots-clés, Regex, LDA, STM) échouent à capturer ces variations (“The Bwatles”) sans un effort de programmation disproportionné, forçant souvent un retour au codage manuel.</p>
 </div>
 </section>
+<section id="section-1" class="slide level2 center" data-background-color="#0f3460">
+<h2></h2>
+<div style="text-align: center;">
+<p><span style="font-size: 1.5em; font-weight: 700; color: white;">Exercice: Codez ces réponses</span></p>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div style="background: white; color: black; padding: 1.2em; border-radius: 10px; margin: 0.5em; font-size: 0.85em;">
+<p><strong>Q: Êtes-vous favorable à plus d’immigration?</strong></p>
+<ol type="1">
+<li><em>“Ça dépend d’où ils viennent”</em></li>
+<li><em>“Oui mais pas trop vite”</em></li>
+<li><em>“Non, y’en a assez”</em></li>
+<li><em>“On devrait aider les réfugiés”</em></li>
+<li><em>“Les immigrants volent nos jobs”</em></li>
+</ol>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="fragment">
+<div style="background: #e94560; padding: 1.2em; border-radius: 10px; color: white; margin: 0.5em;">
+<p><strong>Le défi du codeur:</strong></p>
+<ul>
+<li>Quelle échelle? (1-5? 1-10?)</li>
+<li>“Ça dépend” = neutre ou manquant?</li>
+<li>Réponse 4 = pro-immigration?</li>
+<li>Comment gérer la conditionnalité?</li>
+</ul>
+</div>
+</div>
+</div></div>
+</section>
 <section id="revisiter-le-compromis-de-likert-1932" class="slide level2 center">
 <h2>Revisiter le compromis de Likert (1932)</h2>
 <p>Face à cette “absurdité statistique” de la classification infinie, Rensis Likert proposait un compromis nécessaire pour les outils de 1932 :</p>
@@ -529,6 +560,31 @@ Figure&nbsp;1: Évolution des approches : De la contrainte des ressources à la 
 <li>Biais potentiel introduit par le codage LLM</li>
 </ol>
 </div>
+</section>
+<section id="section-2" class="slide level2 center" data-background-color="#1a1a2e">
+<h2></h2>
+<div style="text-align: center;">
+<p><span style="font-size: 1.3em; font-weight: 600; color: #aaa;">Question de discussion</span></p>
+<p><br></p>
+<p><span style="font-size: 1.4em; color: white; line-height: 1.4;">Pourquoi les réponses ouvertes montrent-elles des attitudes <strong>plus pro-environnementales</strong> mais <strong>moins anti-immigration</strong>?</span></p>
+</div>
+<div class="columns" style="margin-top: 2em;">
+<div class="column" style="width:33%;">
+<div class="fragment" style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;">
+<p><strong>Hypothèse 1</strong></p>
+<p>Désirabilité sociale différenciée selon le sujet?</p>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="fragment" style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;">
+<p><strong>Hypothèse 2</strong></p>
+<p>Biais du LLM dans le codage?</p>
+</div>
+</div><div class="column" style="width:33%;">
+<div class="fragment" style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;">
+<p><strong>Hypothèse 3</strong></p>
+<p>Les échelles fermées “suggèrent” des positions extrêmes?</p>
+</div>
+</div></div>
 </section>
 <section id="résultats-analyse-factorielle" class="slide level2 center">
 <h2>Résultats: Analyse factorielle</h2>
@@ -682,13 +738,56 @@ Figure&nbsp;1: Évolution des approches : De la contrainte des ressources à la 
 <p>Le format ouvert permet de détecter le <strong>vote stratégique</strong>, une information difficile à capturer avec des questions fermées standard.</p>
 </div>
 </section>
+<section id="comment-détecte-t-on-le-vote-stratégique" class="slide level2 center">
+<h2>Comment détecte-t-on le vote stratégique?</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div style="background: #f8f9fa; border-left: 4px solid #DA020E; padding: 1em; border-radius: 8px; margin-bottom: 1em;">
+<p><strong>Réponse brute du répondant:</strong></p>
+<p><em>“I was trying to vote strategically against a conservative incumbent in a very safe seat. Regardless of party affiliation, he’s useless as an MP.”</em></p>
+</div>
+<div class="fragment" style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 8px; color: white;">
+<p><strong>Analyse LLM:</strong></p>
+<ul>
+<li><strong>Parti détecté:</strong> Liberal</li>
+<li><strong>Vote stratégique:</strong> ✓ Oui</li>
+<li><strong>Indicateurs:</strong> “strategically”, “against conservative”</li>
+</ul>
+</div>
+</div><div class="column" style="width:48%;">
+<div style="background: #f8f9fa; border-left: 4px solid #DA020E; padding: 1em; border-radius: 8px; margin-bottom: 1em;">
+<p><strong>Réponse brute du répondant:</strong></p>
+<p><em>“Libéral (stratégique pour empêcher les Conservateurs)”</em></p>
+</div>
+<div class="fragment" style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 8px; color: white;">
+<p><strong>Analyse LLM:</strong></p>
+<ul>
+<li><strong>Parti détecté:</strong> Liberal</li>
+<li><strong>Vote stratégique:</strong> ✓ Oui</li>
+<li><strong>Indicateurs:</strong> “stratégique”, “empêcher”</li>
+</ul>
+</div>
+</div></div>
+<div class="fragment" style="text-align: center; margin-top: 0.8em; font-size: 0.85em; color: #666;">
+<p>Ces nuances seraient perdues avec une question fermée: <em>“Pour quel parti avez-vous voté?”</em></p>
+</div>
+</section>
+<section id="section-3" class="slide level2 center" data-background-color="#0f3460">
+<h2></h2>
+<div style="text-align: center;">
+<p><span style="font-size: 1.3em; font-weight: 600; color: #16c79a;">Réflexion collective</span></p>
+<p><br></p>
+<p><span style="font-size: 1.5em; color: white;">Feriez-vous confiance à un LLM pour coder vos données de sondage?</span></p>
+</div>
+<p>::::</p>
+</section>
 <section id="conclusion" class="slide level2 center">
 <h2>Conclusion</h2>
 <p>Les résultats suggèrent que les LLMs peuvent traiter les réponses ouvertes pour mesurer les mêmes facteurs latents que les questions fermées, avec des propriétés psychométriques acceptables mais systématiquement réduites.</p>
 <p>Cette équivalence structurelle s’accompagne d’effets de format sur les distributions qui méritent considération dans l’interprétation.</p>
 <p>Le choix entre formats devient ainsi une <strong>décision méthodologique</strong> fondée sur les objectifs de recherche, plutôt qu’une <strong>contrainte pratique</strong> imposée par les ressources disponibles.</p>
 </section>
-<section id="section-1" class="slide level2 center" data-background-color="#1a1a2e">
+<section id="section-4" class="slide level2 center" data-background-color="#1a1a2e">
 <h2></h2>
 <div style="text-align: center; margin-top: 12vh;">
 <p><span style="font-size: 2em; font-weight: 700; color: white;">Merci</span></p>
