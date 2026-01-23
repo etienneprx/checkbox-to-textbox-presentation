@@ -405,6 +405,50 @@ répondants canadiens
 **Interprétation:** La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.
 :::
 
+## Items des échelles attitudinales
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.75em;"}
+
+**Environnement (7 items)**
+
+1. Federal government spending on environment
+2. Stricter environmental regulation (even if higher prices)
+3. Jobs vs environment priority
+4. Main cause of climate change
+5. Government support for oil industry
+6. Climate change threat is exaggerated
+7. Federal carbon tax should be maintained
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {style="background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%); padding: 1em; border-radius: 10px; color: white; font-size: 0.75em;"}
+
+**Immigration (5 items)**
+
+1. Immigrants don't want to fit in Canadian society
+2. Immigrants take jobs away from Canadians
+3. Federal spending on immigrants/minorities
+4. Number of immigrants to admit
+5. Strengthen border controls for refugees
+
+:::
+
+:::
+
+::::
+
+::: {style="text-align: center; margin-top: 1em; font-size: 0.85em; color: #666;"}
+Tous les items mesurés sur échelles 0-10 (fermées) ou codés 0-10 par LLM (ouvertes)
+:::
+
 ## Résultats: Statistiques descriptives
 
 ![](figures/fig_mean_med_sd_comparisons.png){fig-align="center" width="100%" .zoomable}
@@ -444,33 +488,6 @@ immi_diff <- mean(immi_scale_open, na.rm = TRUE) - mean(immi_scale_closed, na.rm
 
 :::
 
-:::: {.columns style="margin-top: 2em;"}
-
-::: {.column width="33%"}
-::: {.fragment style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;"}
-**Hypothèse 1**
-
-Désirabilité sociale différenciée selon le sujet?
-:::
-:::
-
-::: {.column width="33%"}
-::: {.fragment style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;"}
-**Hypothèse 2**
-
-Biais du LLM dans le codage?
-:::
-:::
-
-::: {.column width="33%"}
-::: {.fragment style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 8px; text-align: center;"}
-**Hypothèse 3**
-
-Les échelles fermées "suggèrent" des positions extrêmes?
-:::
-:::
-
-::::
 
 ## Résultats: Analyse factorielle
 
