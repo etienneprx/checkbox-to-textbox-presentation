@@ -1,0 +1,7 @@
+Variable: {variable_name}
+Question: {question_text}
+
+{options_block}
+
+Open-ended response:
+"{open_response}"

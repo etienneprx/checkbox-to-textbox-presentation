@@ -1,0 +1,427 @@
+---
+title: ""
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    slide-number: c/t
+    transition: slide
+    transition-speed: fast
+    auto-animate: true
+    auto-animate-easing: ease-in-out
+    width: 1280
+    height: 720
+    margin: 0.08
+    center: true
+    controls: true
+    progress: true
+    hash: true
+execute:
+  echo: false
+  warning: false
+  message: false
+bibliography: article/references.bib
+csl: https://www.zotero.org/styles/apa
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(scales)
+library(psych)
+library(haven)
+
+# Charger les données et convertir les labels
+df_ai <- readRDS("data/df_clean_with_ai_t0.1_n10.rds") %>%
+  mutate(across(where(is.labelled), zap_labels))
+
+# Séparer par condition
+df_closed <- df_ai %>% filter(assignment == "closed")
+df_open <- df_ai %>% filter(assignment == "open")
+
+# Variables environnementales et immigration
+env_vars_closed <- c("env_spending", "env_regulation", "env_priority",
+                     "env_cause", "env_oil", "env_exaggerated", "env_carbon_tax")
+env_vars_ai <- paste0(c("env_spending", "env_regulation", "env_priority",
+                        "env_cause", "env_oil", "env_exaggerated", "env_carbon_tax"), "_ai_t0.1_n10")
+
+immi_vars_closed <- c("immi_integration", "immi_take_jobs", "immi_spending", "immi_more", "immi_border")
+immi_vars_ai <- paste0(c("immi_integration", "immi_take_jobs", "immi_spending", "immi_more", "immi_border"), "_ai_t0.1_n10")
+
+# Calculer les N
+n_total <- nrow(df_ai %>% filter(assignment %in% c("closed", "open")))
+n_closed <- nrow(df_closed)
+n_open <- nrow(df_open)
+
+# Couleurs
+colors <- list(
+  primary = "#1a1a2e",
+  accent = "#e94560",
+  accent2 = "#0f3460",
+  teal = "#16c79a",
+  gold = "#f5a623"
+)
+```
+
+## {background-color="#1a1a2e"}
+
+::: {style="text-align: center; margin-top: 8vh;"}
+
+[FROM CHECKBOX TO TEXTBOX]{style="font-size: 1.8em; font-weight: 700; color: white; letter-spacing: 0.05em;"}
+
+<br>
+
+[Les LLMs peuvent-ils traiter les réponses ouvertes pour]{style="font-size: 0.85em; color: #aaa;"}
+[mesurer les mêmes facteurs latents que les questions fermées?]{style="font-size: 0.85em; color: #aaa;"}
+
+<br><br>
+
+[École de méthodologie | 2025]{style="font-size: 0.6em; color: #666;"}
+
+:::
+
+## Le contexte méthodologique
+
+Les questions ouvertes offrent des avantages théoriques reconnus [@lazarsfeld44; @geer88]:
+
+- Découverte de patterns de réponse non anticipés
+- Absence de biais de suggestion inhérent aux catégories prédéfinies
+- Capture du vocabulaire et du cadrage propres aux répondants
+
+::: {.fragment}
+Cependant, leur utilisation demeure limitée dans la pratique.
+
+> "Open-ended responses [are] frequently collected but rarely analyzed"
+> — @roberts_etal14
+:::
+
+## Le compromis historique
+
+Le codage manuel des réponses textuelles impose des contraintes pratiques:
+
+- Ressources humaines considérables
+- Temps d'analyse prolongé
+- Enjeux de fiabilité inter-codeurs
+
+::: {.fragment}
+Ces contraintes ont favorisé l'adoption généralisée des questions fermées depuis les travaux de @likert32a, établissant un compromis entre **faisabilité analytique** et **richesse substantive**.
+:::
+
+## L'évolution de l'analyse textuelle automatisée
+
+```{r}
+#| fig-width: 9
+#| fig-height: 3
+
+timeline_data <- tibble(
+  year = c(1930, 1970, 2003, 2014, 2023),
+  method = c("Codage\nmanuel", "Méthodes\ndictionnaires", "Topic\nmodeling", "STM", "LLMs"),
+  color = c("#666", "#888", "#aaa", "#16c79a", "#e94560"),
+  y_text = c(0.35, -0.35, 0.35, -0.35, 0.35),
+  y_year = c(-0.15, 0.15, -0.15, 0.15, -0.15)
+)
+
+ggplot(timeline_data, aes(x = year, y = 0)) +
+  geom_segment(aes(x = 1920, xend = 2030, y = 0, yend = 0), color = "#444", linewidth = 1.5) +
+  geom_point(aes(color = color), size = 6) +
+  geom_text(aes(label = method, y = y_text), color = "white", size = 3.2, lineheight = 0.9) +
+  geom_text(aes(label = year, y = y_year), color = "#888", size = 2.8, fontface = "bold") +
+  scale_color_identity() +
+  coord_cartesian(ylim = c(-0.5, 0.5)) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "#1a1a2e", color = NA),
+        panel.background = element_rect(fill = "#1a1a2e", color = NA))
+```
+
+Les méthodes traditionnelles présentent des limitations pour les réponses de sondage: textes courts, langage informel, ambiguïté contextuelle [@roberts_etal14].
+
+## Question de recherche
+
+::: {style="background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%); padding: 1.2em; border-radius: 10px; color: white; margin: 0.8em 0;"}
+
+Les LLMs peuvent-ils mesurer les **mêmes facteurs latents** que les questions fermées traditionnelles?
+
+:::
+
+Cette question porte sur l'**équivalence de mesure**: les deux formats capturent-ils les mêmes construits avec des propriétés psychométriques suffisantes pour l'analyse comparative?
+
+## Design expérimental
+
+```{r}
+#| output: asis
+
+# Calculer les taux de complétion
+completion_closed <- round(n_closed / 1687 * 100, 1)
+completion_open <- round(n_open / 1685 * 100, 1)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {style="background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); padding: 1.5em; border-radius: 15px; text-align: center;"}
+
+::: {style="font-size: 2.5em; font-weight: 800; color: #e94560;"}
+`r format(n_total, big.mark=",")`
+:::
+
+::: {style="font-size: 0.9em; color: white;"}
+répondants canadiens
+:::
+
+:::
+
+:::
+
+::: {.column width="50%"}
+
+| Groupe | N assignés | Complétion |
+|:-------|:----------:|:----------:|
+| Fermées | 1,687 | `r completion_closed`% |
+| Ouvertes | 1,685 | `r completion_open`% |
+
+:::
+
+::::
+
+**21 variables mesurées**: 7 attitudes environnementales, 5 attitudes immigration, 7 SES, 1 vote. Questions issues du CES [@stephenson_etal22] et items complémentaires.
+
+## Méthodologie LLM
+
+**Approche en deux étapes:**
+
+1. Gemini 2.5 Pro génère des prompts optimisés par variable
+2. Gemini 2.0 Flash Lite code les réponses
+
+**Procédure de fiabilité:**
+
+- 10 classifications indépendantes par réponse (température = 1.0)
+- Code final déterminé par classification modale
+- Procédure analogue à la fiabilité inter-codeurs traditionnelle
+
+**Coût computationnel:** ~223,000 prompts traités en <1h pour <3$
+
+## Résultats: Données manquantes
+
+```{r}
+# Calculer les taux de complétion par échelle
+env_complete_closed <- df_closed %>%
+  select(all_of(env_vars_closed)) %>%
+  complete.cases() %>%
+  mean() * 100
+
+env_complete_open <- df_open %>%
+  select(all_of(env_vars_ai)) %>%
+  complete.cases() %>%
+  mean() * 100
+
+immi_complete_closed <- df_closed %>%
+  select(all_of(immi_vars_closed)) %>%
+  complete.cases() %>%
+  mean() * 100
+
+immi_complete_open <- df_open %>%
+  select(all_of(immi_vars_ai)) %>%
+  complete.cases() %>%
+  mean() * 100
+```
+
+Les questions ouvertes produisent des taux de non-réponse plus élevés:
+
+| Échelle | Fermées | Ouvertes |
+|:--------|:-------:|:--------:|
+| Environnement | `r round(env_complete_closed, 1)`% complets | `r round(env_complete_open, 1)`% complets |
+| Immigration | `r round(immi_complete_closed, 1)`% complets | `r round(immi_complete_open, 1)`% complets |
+
+::: {.fragment}
+**Interprétation:** La non-réponse se concentre sur les items demandant des estimations quantitatives. Les items attitudinaux simples montrent des différences plus modestes. Aucun effet de fatigue détecté.
+:::
+
+## Résultats: Statistiques descriptives
+
+```{r}
+#| fig-width: 9
+#| fig-height: 4
+
+# Créer les échelles (moyenne des items, normalisées 0-1)
+env_closed_data <- df_closed %>% select(all_of(env_vars_closed))
+immi_closed_data <- df_closed %>% select(all_of(immi_vars_closed))
+env_open_data <- df_open %>% select(all_of(env_vars_ai))
+immi_open_data <- df_open %>% select(all_of(immi_vars_ai))
+
+calc_scale <- function(data) {
+  data %>%
+    mutate(across(everything(), ~./10)) %>%
+    rowMeans(na.rm = FALSE)
+}
+
+env_scale_closed <- calc_scale(env_closed_data)
+env_scale_open <- calc_scale(env_open_data)
+immi_scale_closed <- calc_scale(immi_closed_data)
+immi_scale_open <- calc_scale(immi_open_data)
+
+stats_data <- tibble(
+  scale = rep(c("Environnement", "Immigration"), each = 2),
+  condition = rep(c("Fermées", "Ouvertes"), 2),
+  mean = c(mean(env_scale_closed, na.rm = TRUE),
+           mean(env_scale_open, na.rm = TRUE),
+           mean(immi_scale_closed, na.rm = TRUE),
+           mean(immi_scale_open, na.rm = TRUE)),
+  median = c(median(env_scale_closed, na.rm = TRUE),
+             median(env_scale_open, na.rm = TRUE),
+             median(immi_scale_closed, na.rm = TRUE),
+             median(immi_scale_open, na.rm = TRUE))
+)
+
+stats_long <- stats_data %>%
+  pivot_longer(cols = c(mean, median), names_to = "stat", values_to = "value") %>%
+  mutate(stat = ifelse(stat == "mean", "Moyenne", "Médiane"))
+
+ggplot(stats_long, aes(x = scale, y = value, fill = condition)) +
+  geom_col(position = position_dodge(0.8), width = 0.65) +
+  geom_text(aes(label = sprintf("%.3f", value)),
+            position = position_dodge(0.8), vjust = -0.5, size = 2.8) +
+  facet_wrap(~stat) +
+  scale_fill_manual(values = c("#0f3460", "#e94560")) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  labs(title = "Distribution des échelles par format de réponse",
+       subtitle = "Scores normalisés 0-1",
+       x = NULL, y = "Score", fill = NULL) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top",
+        panel.grid.minor = element_blank(),
+        plot.title = element_text(face = "bold", size = 12),
+        strip.text = element_text(face = "bold"))
+```
+
+## Résultats: Tests de différences
+
+```{r}
+env_t <- t.test(env_scale_open, env_scale_closed)
+immi_t <- t.test(immi_scale_open, immi_scale_closed)
+
+env_diff <- mean(env_scale_open, na.rm = TRUE) - mean(env_scale_closed, na.rm = TRUE)
+immi_diff <- mean(immi_scale_open, na.rm = TRUE) - mean(immi_scale_closed, na.rm = TRUE)
+```
+
+**Environnement:** Ouvertes > Fermées
+
+- Δ = `r sprintf("%.3f", env_diff)`, *t* = `r sprintf("%.2f", env_t$statistic)`, *p* `r ifelse(env_t$p.value < 0.001, "< .001", sprintf("= %.3f", env_t$p.value))`
+
+**Immigration:** Ouvertes < Fermées
+
+- Δ = `r sprintf("%.3f", immi_diff)`, *t* = `r sprintf("%.2f", immi_t$statistic)`, *p* `r ifelse(immi_t$p.value < 0.001, "< .001", sprintf("= %.3f", immi_t$p.value))`
+
+::: {.fragment}
+**Interprétations possibles:**
+
+1. Effet de format cognitif (génération vs reconnaissance)
+2. Interaction entre désirabilité sociale et structure de réponse
+3. Biais potentiel introduit par le codage LLM
+:::
+
+## Résultats: Analyse factorielle
+
+:::: {.columns}
+
+::: {.column width="55%"}
+
+![](figures/fig_factor_analysis_dumbell.png){width="95%"}
+
+:::
+
+::: {.column width="45%"}
+
+```{r}
+alpha_env_closed <- psych::alpha(env_closed_data, check.keys = TRUE)$total$raw_alpha
+alpha_env_open <- psych::alpha(env_open_data, check.keys = TRUE)$total$raw_alpha
+alpha_immi_closed <- psych::alpha(immi_closed_data, check.keys = TRUE)$total$raw_alpha
+alpha_immi_open <- psych::alpha(immi_open_data, check.keys = TRUE)$total$raw_alpha
+```
+
+**Fiabilité (α de Cronbach):**
+
+| Échelle | Fermées | Ouvertes |
+|:--------|:-------:|:--------:|
+| Env. | `r sprintf("%.3f", alpha_env_closed)` | `r sprintf("%.3f", alpha_env_open)` |
+| Immi. | `r sprintf("%.3f", alpha_immi_closed)` | `r sprintf("%.3f", alpha_immi_open)` |
+
+Les deux formats produisent des structures factorielles comparables, avec une réduction systématique de la fiabilité pour le format ouvert.
+
+:::
+
+::::
+
+## Discussion: Synthèse des résultats
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+::: {style="background: linear-gradient(135deg, #16c79a 0%, #0f3460 100%); padding: 1.2em; border-radius: 12px; color: white;"}
+
+**Ce que les LLMs permettent:**
+
+- Analyse à grande échelle
+- Équivalence factorielle
+- Validité externe maintenue
+- Fiabilité acceptable (α > .6)
+
+:::
+
+:::
+
+::: {.column width="48%"}
+
+::: {style="background: linear-gradient(135deg, #e94560 0%, #1a1a2e 100%); padding: 1.2em; border-radius: 12px; color: white;"}
+
+**Considérations:**
+
+- Réduction de fiabilité
+- Non-réponse accrue
+- Effets de format sur distributions
+- Biais potentiels des modèles
+
+:::
+
+:::
+
+::::
+
+## Implications méthodologiques
+
+1. **Choix méthodologique plutôt que contrainte pratique**
+
+   Les LLMs réduisent les barrières qui limitaient historiquement l'usage des questions ouvertes.
+
+2. **Complémentarité des formats**
+
+   Chaque format capture des aspects potentiellement distincts des attitudes.
+
+3. **Considérations spécifiques au domaine**
+
+   Les effets de format varient selon le contenu substantif des attitudes mesurées.
+
+## Conclusion
+
+Les résultats suggèrent que les LLMs peuvent traiter les réponses ouvertes pour mesurer les mêmes facteurs latents que les questions fermées, avec des propriétés psychométriques acceptables mais systématiquement réduites.
+
+Cette équivalence structurelle s'accompagne d'effets de format sur les distributions qui méritent considération dans l'interprétation.
+
+Le choix entre formats devient ainsi une **décision méthodologique** fondée sur les objectifs de recherche, plutôt qu'une **contrainte pratique** imposée par les ressources disponibles.
+
+## {background-color="#1a1a2e"}
+
+::: {style="text-align: center; margin-top: 12vh;"}
+
+[Merci]{style="font-size: 2em; font-weight: 700; color: white;"}
+
+<br>
+
+[Questions et discussion]{style="font-size: 1em; color: #aaa;"}
+
+:::
+
+## Références {visibility="uncounted"}
+
+::: {style="font-size: 0.6em;"}
+:::

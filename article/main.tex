@@ -1,0 +1,657 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% To select a journal, use its code for the 
+% journal= option in the \documentclass command.
+% The journal codes for this template are:
+% 
+% Annals of Actuarial Science: aas
+% British Journal of Political Science: jps
+% Network Science: nws
+% Political Analysis: pla
+% Political Science Research and Methods: ram
+% Evolutionary Human Sciences: ehs
+% Natural Language Processing: nlp
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[
+  journal=ram,
+  manuscript=article-type,
+  year=2025,
+  volume=unpublished,
+]{cup-journal}
+
+\usepackage{amsmath}
+\usepackage[nopatch]{microtype}
+\usepackage{booktabs}
+\usepackage{float}
+
+\title{From Checkbox to Textbox : Can LLM-processed Open-Ended Questions Measure the Same Latent Factors as Traditional Closed-Ended Questions?}
+
+\author{Anonymous}
+\affiliation{Anonymous}
+\email[Anonymous]{mail@anonymous.com}
+
+\addbibresource{references.bib}
+
+\keywords{survey methodology, large language models, open-ended questions, attitude measurement} %% First letter not capped
+
+\begin{document}
+
+\begin{abstract}
+Despite nearly a century of methodological dominance, closed-ended survey questions may systematically constrain our understanding of public opinion by forcing complex attitudes into predetermined categories. This study investigates whether large language models (LLMs) can bridge the gap between the theoretical promise and practical implementation of open-ended questions. Using a survey experiment (N=3,372), we show LLM-processed open-ended responses measure the same latent factors as closed-ended questions and maintain substantively equivalent external validity. However, this equivalence comes with a crucial trade-off: open-ended formats show systematically lower measurement reliability while capturing authentic attitudinal complexity that closed-ended formats artificially compress. Exploratory analysis also reveals the potential for open-ended questions to capture more information from a single item, such as implicit political reasoning. Thus, LLMs dissolve the historical compromise between tractability and complexity, transforming a practical constraint into a methodological choice.
+\end{abstract}
+
+\section{Introduction}
+
+Despite the recent technological advancements in generative AI that is revolutionizing data collection and analysis, survey research remains anchored to methods developed nearly a century ago.
+While sophisticated capabilities for processing and analyzing textual data are easily available, contemporary surveys continue to rely predominantly on closed-ended questions, with open-ended responses frequently collected but rarely analyzed \citep{roberts_etal14}.
+This methodological convention, despite its many benefits, may be limiting our understanding of public opinion by forcing complex attitudes into predetermined categories, potentially obscuring the very phenomena social scientists seek to understand.
+
+The costs of this approach become apparent when considering what gets lost in translation.
+In a recent survey of 2,000 French and English respondents, we asked the seemingly simple question: "What is your favourite band or musician?"
+The most popular answer, The Beatles, chosen by 75 respondents, appeared in 10 different variations: "the beatles," "The Beatles," "The beatles," "The Bwatles," "beatles," "Beatles," "beetles," "Beetles," "les beattels," and "Les Beatles."
+This mundane example illustrates a profound challenge: even when respondents provide identical substantive responses, the analytical complexity of processing their answers often renders this rich data hardly usable.
+More concerning, closed-ended formats provide no systematic way of identifying which attitude dimensions remain unobserved when respondents are constrained to predetermined categories.
+
+The tension between analytical tractability and substantive complexity has long plagued survey research.
+Writing in 1932, Rensis Likert warned that researchers could "group stimuli in almost any conceivable manner and to classify and subclassify them indefinitely [...] This result is statistically as well as psychologically absurd" \citep{likert32a}.
+Likert's solution, the now-famous Likert scale, represented a reasonable compromise given the analytical tools available at the time.
+Yet his warning about the "statistical absurdity" of infinite classifications feels relevant when considering whether AI might finally resolve this fundamental tension between standardization and complexity.
+
+Open-ended questions offer distinctive advantages that closed-ended formats cannot replicate.
+For cumulative scientific progress, textual responses create durable analytical material that can be revisited with new theories and methods as our understanding evolves.
+They enable the detection of emerging issues before they become salient enough to appear in survey questionnaires.
+They avoid cueing bias by allowing respondents to frame issues in their own terms rather than forcing them into researchers' conceptual frameworks.
+Perhaps most importantly, they capture nuance and complexity in attitudes that would otherwise be flattened into predefined categories.
+
+Yet these advantages have historically come at prohibitive analytical costs.
+Processing large volumes of open-ended responses typically requires extensive human coding, raising concerns about reliability, consistency, and scalability.
+Respondents may skip open-ended questions due to increased cognitive demands \citep{dillman_etal14a}, and non-responses may reflect rhetorical limitations rather than substantive indifference \citep{geer88}.
+These practical constraints have created a self-reinforcing cycle: researchers avoid open-ended questions because they are difficult to analyze, which perpetuates methodological approaches that may be systematically missing crucial dimensions of public opinion.
+
+The recent development and widespread adoption of large language models (LLMs) present an unprecedented opportunity to break this cycle.
+These systems offer sophisticated capabilities for automated text analysis and categorization at scale, potentially transforming open-ended survey questions from analytical burdens into powerful tools for comprehensive social research.
+
+This prospect raises a critical question for survey research and democratic representation:
+\textit{Can LLMs measure the same latent factors as traditional closed-ended questions?}
+By addressing this question, this research does not claim to resolve \citet{likert32a}'s nearly century-old dilemma.
+Rather, we aim to reopen the methodological debate that his innovation effectively closed.
+Where Likert's solution represented a necessary compromise with 1930s analytical constraints, we investigate whether modern computational tools allow researchers to reconsider the trade-off between standardization and complexity.
+This article demonstrates the viability of LLM-processed open-ended responses for quantitative analysis, expanding, not replacing, the methodological options available to survey researchers.
+
+\section{The Methodological Trade-off in Survey Research}
+
+The debate over open-ended vs. closed-ended questions has long been considered settled \citep{lazarsfeld44}, with closed-ended questions emerging as the obvious choice for many researchers.
+This methodological consensus mainly comes from practical considerations that continue to shape contemporary survey design.
+Closed-ended questions offer substantial advantages in data collection, processing, and analysis compared to their open-ended counterparts \citep{geer91, schuman_presser80}.
+For researchers, it involves more time spent analyzing data rather than cleaning it.
+This format ensures that all responses are directly comparable, both across respondents at a given point in time and longitudinally across repeated survey waves, enabling straightforward tracking of attitudinal change.
+For the respondent, selecting from a list of options is less demanding than spontaneously formulating an answer \citep{foddy93}.
+Pre-set options also cue respondents about the expected type of answer.
+This helps ensure proper answers, even when the question is poorly formulated \citep{foddy93}.
+These practical benefits manifest in higher completion rates and reduced item non-response, as closed-ended formats minimize the cognitive demands that often lead respondents to skip more challenging open-ended items \citep{couper00, couper01}.
+
+However, this methodological consensus seems to reflect a fundamental trade-off between analytical tractability and substantive complexity.
+Closed-ended questions may be ill-suited for measuring precisely those phenomena whose characteristics resist standardization: multidimensional constructs, context-dependent attitudes, and temporally dynamic opinions.
+\citet{converse64}'s work on attitude constraint revealed that mass political attitudes often lack the coherent structure that closed-ended response formats implicitly assume.
+Rather than possessing stable, well-organized belief systems, citizens frequently hold attitudes that are loosely connected and susceptible to contextual influences.
+This insight exposes a fundamental mismatch: if political attitudes are inherently fluid and evolve continuously, predetermined response categories may systematically fail to capture their true nature.
+
+The theoretical costs of methodological convenience become particularly evident when we consider the dynamic nature of political attitudes and opinion formation.
+Survey instruments designed to measure specific attitudes struggle to keep pace as political contexts shift and new issues emerge.
+Closed-ended formats, by their very structure, impose researchers' conceptual frameworks on respondents, potentially overlooking emerging dimensions of public opinion or constraining expressions of attitudes that fall outside predetermined categories \citep{schuman_presser96}.
+This rigidity is particularly problematic in rapidly evolving political environments, where the substantive content of debate, and thus the relevant structure of attitudes, may transform faster than survey development cycles can accommodate.
+
+\section{The Promise of Open-Ended Questions}
+
+Despite the methodological consensus favoring closed-ended formats, open-ended questions offer distinctive advantages that extend far beyond simply avoiding leading questions.
+The primary theoretical advantage lies in their capacity to reveal unanticipated response patterns and capture the actual cognitive frameworks respondents use to organize political information \citep{reja_etal03, converse64, foddy93, lazarsfeld44, schuman08}.
+Rather than forcing respondents into researchers’ predetermined answer choices, open-ended questions allow the discovery of political attitudes that we might not have thought about.
+It also enables individuals to express their views in their own words, reflecting their salient concerns.
+Open-ended questions do not cue respondents to think of particular causes or treatments, they allow them to provide their thoughts spontaneously with reduced biases.
+
+Open-ended questions also provide longitudinal analytical capabilities that closed-ended formats seem unable to replicate.
+The same questions administered over time can reveal shifting vocabularies and conceptual frameworks in respondents’ answers, enabling researchers to track how political discourse itself evolves \citep{geer88}.
+This capacity is illustrated by longitudinal patterns in ANES data, where non-response to open-ended questions about political parties increased dramatically from 9.8\% in 1952 to 34.3\% by 1980 \citep{geer88}.
+Rather than indicating growing inarticulateness, this pattern reflects the declining salience of parties in the electorate \citep{wattenberg84, geer88}.
+When the same respondents were asked about other politically salient topics, response rates remained high: over 97\% cited an "important problem" facing the nation in 1968, and less than 0.5\% failed to respond to at least one of eight open-ended questions in that survey.
+This demonstrates how open-ended questions can serve as indicators of shifting political priorities.
+The ability to capture new kinds of answers makes them essential for measuring change, especially with emergent issues like new wars or increasing polarization.
+
+Empirical evidence demonstrates that open-ended questions often predict behavior better than closed-ended measures, especially for complex or emerging issues where standard question batteries may be theoretically inadequate \citep{blair_etal77, singer_couper17}.
+This becomes particularly true for sensitive topics requiring quantified answers, where threatening questions are best asked in open-ended, long formats with respondent-familiar wording.
+For behavioral frequency questions, especially regarding normatively deviant behaviors like alcohol and drug consumption, open questions prove more appropriate because closed scales can bias reports by implying what is "normal".
+Thus, open-ended questions permit more socially undesirable answers to threatening questions compared to closed ones.
+
+This advantage extends beyond prediction to explanation: open-ended responses reveal the reasoning behind respondent choices, distinguishing between different forms of political behavior that would appear identical in closed-ended formats \citep{schuman08, lazarsfeld44}.
+\citet{geer88}'s experimental evidence provides support for the validity of open-ended measures, demonstrating that such questions can "measure the attitudes of respondents rather than simply their ability to articulate a response".
+This challenges assumptions that textual responses primarily reflect educational or rhetorical differences among respondents.
+The demonstrated predictive validity, explanatory depth, and longitudinal sensitivity raise fundamental questions about why survey researchers have maintained their commitment to closed-ended approaches.
+
+This persistent methodological consensus around closed-ended questions, despite evidence that open-ended questions are more adequate in certain situations, reflects a pragmatic trade-off between theory and feasibility.
+Survey researchers have generally recognized that complex political attitudes resist reduction to predetermined response categories, yet they have accepted this constraint because the alternative has been impractical.
+The labor-intensive process of manually coding textual data requires extensive human resources, substantial financial investment, and prolonged analysis timelines, making large-scale use of open-ended questions prohibitively expensive for most research projects \citep{lazarsfeld44, geer91, roberts_etal14}.
+This pragmatic compromise has shaped the field's development, creating a disconnect between methodological ideals and research practice that may have limited our understanding of public opinion.
+The emergence of advanced automated text analysis capabilities, however, suggests that this longstanding trade-off may no longer stand, allowing researchers to pursue theoretical depth without sacrificing the analytical tractability that has made survey research feasible at scale.
+
+\section{Automated Text Analysis: From Early Methods to Large Language Models}
+
+Open-ended survey response analysis remains one of survey methodology's most intractable challenges despite decades of advancement in automated text analysis.
+While computational methods have transformed political text analysis in many domains, citizen survey responses have consistently resisted scalable automated processing \citep{roberts_etal14}.
+
+Early survey research relied entirely on manual coding procedures imposing severe practical constraints \citep{lasswell27, berelson52, holsti69, weber90, krippendorff19}.
+Mass belief system analyses required extensive hand-coding of ANES responses, demanding enormous human resources \citep{converse64}.
+Manual coding's resource intensity contributed to declining open-ended question use throughout the twentieth century's latter half \citep{converse84, hickey_kipping96, galura_etal22}.
+
+Computer-assisted content analysis in the 1970s-1980s attempted to address scalability challenges.
+Dictionary-based methods allowed systematic categorization using predetermined word lists \citep{pennebaker_etal01, tausczik_pennebaker10, young_soroka12, laver_garry00}.
+Yet application to survey responses revealed fundamental limitations.
+Word-counting approaches proved poorly suited to nuanced, ambiguous language characteristic of citizen political discourse \citep{tausczik_pennebaker10}.
+Survey responses frequently employ irony, implicit references, and context-dependent meanings that dictionary methods systematically misinterpret.
+Pre-set categories replicated many limitations of closed-ended questions \citep{mossholder_etal95, rohrer_etal17}.
+
+Machine learning approaches, particularly topic modeling, appeared to address dictionary method limitations.
+The "Text as Data" framework established theoretical foundations for applying supervised and unsupervised learning methods \citep{grimmer_stewart13}.
+Latent Dirichlet Allocation promised to uncover latent thematic structures without predetermined categories \citep{blei_etal03, jelodar_etal19, maier_etal18}.
+Supervised methods like wordscores launched the "words as data" approach \citep{laver_etal03}, while Wordfish provided unsupervised scaling \citep{slapin_proksch08}.
+Yet application to survey data encountered persistent challenges.
+Standard topic modeling performs poorly on short texts, creating fundamental barriers where responses lack extensive context \citep{pietsch_lessmann18}.
+Structural Topic Models represented a significant advance by incorporating document-level covariates \citep{roberts_etal14, roberts_etal19}.
+However, even this approach required extensive human interpretation and validation, limiting scalability.
+
+These challenges reflect fundamental mismatch between automated methods designed for expert-produced texts and characteristics of citizen discourse.
+Even high-performing document classifiers can be "hugely biased when estimating category proportions" \citep{hopkins_king10}.
+\citet{baden_etal22} argue that computational text analysis has "prioritized technological over validity concerns," creating misalignment between automated methods and social science measurement goals.
+Traditional automated methods require either extensive text preprocessing, large training datasets with expert-labeled examples, or substantial technical expertise.
+
+Large language model emergence may represent a methodological breakthrough for analyzing open-ended survey responses.
+Unlike traditional automated methods requiring extensive training data and technical expertise, LLMs perform sophisticated text analysis through natural language instructions alone.
+Researchers can specify analytical tasks in plain language without requiring specialized programming skills or labeled training datasets \citep{ziems_etal24, dunivin25}.
+This technological development suggests that practical constraints forcing researchers to choose between theoretical depth and analytical feasibility may be diminishing.
+
+Recent empirical applications demonstrate that LLMs can execute tasks traditionally requiring manual coding.
+Studies report accuracy rates exceeding 90\% for categorizing survey responses, with some achieving parity with inter-rater agreement between human experts \citep{mellon_etal24, kornblith_etal25, lossio-ventura_etal24}.
+These capabilities extend beyond simple categorization.
+LLMs correct misspellings while preserving contextual meaning and colloquialisms, extract structured information from unstructured text, and identify implicit emotional content that human coders occasionally overlook \citep{allamong_etal25, dunivin25}.
+These advances suggest automated methods may finally possess the contextual understanding necessary to process irregular, inconsistent text characterizing citizen survey responses.
+
+However, LLM application to citizen discourse reveals persistent analytical challenges \citep{m_foisy_etal25}.
+While these models demonstrate proficiency at identifying broad thematic categories and explicit sentiment, performance degrades when processing nuanced, context-dependent language.
+Accuracy deteriorates significantly when analyzing lengthy responses, emotionally charged language, or non-substantive categories such as "don't know" responses \citep{ashwin_etal23, geiecke_jaravel25}.
+Survey responses employing irony, implicit references, or requiring cultural knowledge continue to present substantial challenges.
+This pattern indicates that even sophisticated LLMs encounter the fundamental problem limiting earlier computational methods: approaches optimized for formal texts struggle to accommodate distinctive characteristics of citizen political discourse.
+
+Systematic biases embedded in LLM analysis raise questions about measurement validity.
+Training on internet corpora introduces biases correlating with respondent characteristics, including education, gender, and cultural background.
+Models demonstrate performance patterns most closely resembling responses from Western, educated populations \citep{m_foisy_etal24, gallegos_etal24}.
+Closed-source architecture opacity exacerbates these concerns by obscuring training data and processing mechanisms, preventing researchers from identifying or correcting sources of bias \citep{liu_sun23, ashwin_etal23, he_etal24, burstein_etal25}.
+The non-deterministic nature of many models means identical prompts can yield different results across runs, introducing reproducibility challenges compromising fundamental standards of scientific research \citep{ouyang_zhang24}.
+
+These limitations suggest that while LLMs may not be a methodological panacea, they represent a significant advance to challenges of analyzing open-ended survey responses.
+Processing thousands of responses in minutes rather than months transforms what is feasible in survey research, dissolving resource constraints that have confined researchers to closed-ended questions for decades.
+Researchers can now collect and analyze textual responses at scales that would have required entire research teams and extensive manual coding, opening analytical possibilities that were previously unimaginable.
+The methodological trade-off between analytical tractability and substantive complexity that has defined survey research since Likert's time persists, but LLMs fundamentally shift the frontier of what is achievable.
+Where researchers once faced a stark choice between depth and scale, they now navigate questions of algorithmic bias and measurement precision while accessing unprecedented volumes of nuanced public opinion data.
+The critical empirical question becomes not whether LLMs perfectly replicate closed-ended measurement, they do not, but whether unique insights available through scalable open-ended analysis justify the psychometric differences.
+This study examines whether LLMs can finally bridge the persistent gap between open-ended questions' theoretical promise and practical implementation in contemporary survey research.
+
+We address the following research question:
+\textbf{RQ:}
+\textit{Can LLM-processed open-ended questions measure the same latent factors as traditional closed-ended questions?}
+
+\section{Data and Methods}
+
+\subsection{Survey Design and Scale Selection}
+
+To answer our research question, we surveyed 3,372 respondents drawn randomly from a panel of French and English respondents.\footnote{Our panel is constituted of Canadian \textit{Datagotchi} participants who manifested their desire to participate in further surveys.
+\textit{Datagotchi} is a gamified web survey platform deployed during the 2025 Canadian federal election.
+Though not representative of the general population, robustness analyses demonstrate that treatment effects do not vary significantly across key demographic subgroups, with the exception of treatment × age ($p = 0.016$) and treatment × province ($p = 0.079$) interactions for immigration attitudes (see \ref{appendix-subgroups}).
+We consider that these interactions do not alter the overall validity of our findings.}
+Each respondent was presented with seven socioeconomic questions, a vote choice question, seven environmental attitude questions, and five immigration attitude questions.
+Our measurement strategy combined established instruments with contemporary items to ensure both construct validity and relevance to current political discourse.
+We drew four environmental and three immigration questions from the Canadian Election Study (CES) \citep{stephenson_etal22}.
+We used these validated measures to maintain methodological continuity with established political science research.
+To ensure comprehensive coverage of contemporary attitude dimensions, we supplemented these foundational items with three additional environmental questions and two immigration questions, capturing issue framings and policy nuances that have gained prominence since the original CES development.
+
+Factor analysis validated this hybrid approach, confirming that all items within each domain loaded together as coherent constructs. Based on scree plot analysis with parallel analysis (see \ref{appendix-scree-plot}), we adopted a two-factor solution for both response formats. The complete wording of all survey questions is provided in \ref{appendix-wording}.
+
+We selected environmental and immigration attitudes for three methodological reasons. First, both domains exhibit measurement complexity. Environmental attitude measurement faces persistent conceptual challenges, with excessive proliferation of measurement instruments and structural validity problems \citep{cruz_manata20}. Immigration attitudes present parallel complexities, with traditional surveys relying on narrow measures that fail to capture multidimensional policy preferences \citep{hainmueller_hopkins14}. Second, both domains suffer from severe response bias with traditional Likert scales. Environmental scales face validity concerns and weak reliability coefficients \citep{cruz_manata20}. Immigration attitudes encounter pronounced social desirability bias, evidenced by gaps between survey responses and actual voting behavior \citep{hainmueller_hopkins14}. Third, these domains represent maximum measurement challenge scenarios: if our LLM-enhanced methodology produces valid measurements in these problematic domains, it demonstrates broader applicability across political science.
+
+We designed the survey with two treatment groups: one using traditional closed-ended Likert scales, the other using open-ended questions formulated identically. Respondents were randomly assigned, with 1,687 in the closed-ended group and 1,685 in the open-ended group. Completion rates were 1,580 (93.7\%) and 1,237 (73.4\%) respectively. Respondents received no indication of treatment assignment and nothing incited longer responses. This ensured comparability between formats. Respondents could skip any question.
+
+\subsection{LLM Methodology}
+
+We developed a two-stage LLM approach to systematically code open-ended survey responses into categorical variables corresponding to traditional closed-ended response options. In the first stage, Gemini 2.5 Pro analyzes variable metadata (question wording, response categories, sample responses) to generate tailored prompts optimized for each question type. The second stage applies these prompts to code responses using Gemini 2.0 Flash Lite, a faster model optimized for high-volume classification. See \ref{appendix-prompts} for complete prompt structure and examples.
+
+To ensure coding reliability, we generated ten independent classifications per response through parallel LLM calls (temperature = 1.0), mirroring traditional inter-coder reliability procedures. The final code was determined by modal classification across iterations, with consensus strength serving as a reliability metric. This approach achieved strong reliability: median consensus reached 96.5\% and overall average consensus 92.6\%. Specifically, 37.2\% of responses achieved perfect consensus (10/10 agreement) and 38.8\% achieved strong consensus (9/10). Performance remained robust across variable types: environmental attitudes 92.7\%, voting behavior 92.7\%, immigration attitudes 92.6\%, and socioeconomic variables 92.4\%.
+
+Each coded response underwent structural validation to ensure format consistency. A quality control mechanism reprocessed any responses failing validation checks up to 10 times.
+
+The computational implementation uses parallel processing through shell scripts that launch simultaneous R processes for each variable, each handling 10 values per variable concurrently. This architecture enables processing rates exceeding 1,000 responses per minute. At approximately \$0.023 per 1,000 responses, the system maintains high quality through consensus validation while achieving dramatic cost reductions. In total, 223,639 prompts were generated in under an hour for under three dollars.\footnote{All code is available on GitHub at: \url{https://github.com/from-checkbox-to-textbox/research}}
+
+\section{Results}
+
+\subsection{Missing Data}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{fig_na_combined.png}
+\caption{Missing Data Patterns by Response Format}
+\label{fig_missing_data}
+\end{figure}
+
+Open-ended questions produced substantially higher missing data rates than closed-ended formats (Figure \ref{fig_missing_data}).
+Scale completeness differed markedly: environmental and immigration scales achieved 85.4\% and 82.2\% complete cases for closed-ended items versus 58.4\% and 42.1\% for open-ended items.
+Respondents could skip questions without penalty.
+
+These patterns require careful interpretation.
+Non-response concentrated in three items requesting quantitative policy estimates, where 28-38\% of open-ended respondents left answers blank versus 4-8\% for closed-ended formats.
+Respondents who did answer these items often provided qualitative expressions like "more" or "less" rather than numeric values.
+This suggests non-response reflects genuine uncertainty about absolute policy positions rather than unwillingness to respond.
+
+The remaining nine attitude items showed minimal format differences (median difference: 2.3 percentage points).
+Three items showed no significant difference between formats ($p > .05$).
+Survey fatigue analysis found no evidence that open-ended questions imposed greater cognitive burden.
+Question position did not correlate with non-response for either format.
+
+These patterns indicate that open-ended formats reveal response uncertainty on complex quantitative questions while performing comparably to closed-ended formats for straightforward attitude items (see Appendix \ref{appendix-missing-data}).
+
+\subsection{Descriptive Statistics}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{fig_mean_med_sd_comparisons.png}
+\caption{Descriptive Statistics Comparison by Treatment Condition}
+\label{fig_desc_stats}
+\end{figure}
+
+All variables were normalized to 0-1 scales where higher values indicate more pro-environmental or anti-immigration positions.
+Response formats produced systematic divergence between environmental and immigration domains (\ref{fig_desc_stats}).
+
+Open-ended responses yielded consistently higher means for environmental variables, with effect sizes ranging from negligible to substantial.
+The largest difference appeared for prioritizing environmental protection over jobs, where open-ended responses averaged 0.71 versus 0.58 for closed-ended formats.
+This pattern suggests free-text expression facilitates more pro-environmental attitude expression, potentially by allowing respondents to articulate support without the anchoring effects of predetermined categories.
+
+Median analysis revealed crucial distributional nuances that mean comparisons obscure.
+Several environmental variables showed identical medians despite mean differences, indicating format effects operate primarily at distribution extremes rather than shifting typical responses.
+However, two politically salient items demonstrated fundamental distributional shifts: environmental regulation support and carbon tax attitudes showed median differences of 0.25 and 0.33 scale points respectively.
+These shifts suggest predetermined response categories may systematically constrain expression of support for controversial environmental policies, forcing moderate supporters into less supportive categories.
+
+Immigration attitudes demonstrated the inverse pattern.
+Open-ended responses yielded systematically lower means, with particularly pronounced differences for support of reduced immigration and stricter border controls.
+However, median comparisons revealed that substantial mean differences often mask more complex dynamics.
+Attitudes toward immigrants taking jobs showed identical medians across formats despite mean differences, indicating format effects operate primarily through changes in the intensity of negative attitudes rather than shifts in modal response patterns.
+This suggests that open-ended formats may reduce expression of extreme anti-immigration positions while leaving typical responses unchanged.
+Immigration reduction preferences represented the only variable demonstrating fundamental distributional change, with open-ended medians falling 0.25 points below closed-ended medians.
+
+Open-ended responses exhibited greater standard deviations for nine of twelve variables, with mean ratios of 1.08 for environmental attitudes and 1.04 for immigration attitudes.
+Environmental regulation support showed the most pronounced variability increase, while climate change human causation showed minimal change.
+This systematic pattern suggests free-text expression allows articulation of nuanced positions that resist compression into predetermined categories, resulting in authentic distributional expansion rather than measurement noise.
+The consistently higher variability in open-ended responses indicates that standard response formats may artificially constrain the natural distribution of political attitudes, potentially masking important heterogeneity in public preferences.
+A full table of all descriptive statistics and variable details is available in \ref{appendix-descriptive-table}
+
+These distributional differences have direct implications for how we conceptualize attitude measurement: if closed-ended formats systematically compress the range of expressed opinions, they may produce misleading portraits of public opinion structure that underestimate the true diversity of citizen preferences.
+The domain-specific nature of these effects, with environmental attitudes showing stronger format sensitivity than immigration attitudes, further suggests that the degree of artificial constraint varies systematically by issue type.
+Complete item-level distributions and statistics are available in \ref{appendix-descriptive-effects}.
+
+\subsection{Scales}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_factor_analysis_dumbell.png}
+\caption{Factor Loadings Comparison Between Response Formats}
+\label{fig_factor_analysis}
+\end{figure}
+
+To assess whether open-ended and closed-ended response formats measure the same underlying political attitudes, we constructed unidimensional scales for environmental and immigration attitudes using single-factor solutions.
+The central research question of this paper centers on measurement equivalence: \textit{Do LLM-processed open-ended responses and traditional closed-ended responses capture identical latent constructs with sufficient psychometric properties to support comparative analysis?}
+As shown in \ref{fig_factor_analysis}, factor analytic evidence demonstrates that both formats successfully measure coherent attitude dimensions, though with systematic differences in measurement precision.
+
+The environmental attitude scale demonstrates strong unidimensional structure across both response formats, with all seven variables achieving acceptable factor loadings ($\geq 0.3$) in both conditions.
+The single-factor solution accounts for substantial variance in both open-ended (eigenvalue = 3.51) and closed-ended (eigenvalue = 4.29) formats, indicating that a coherent pro-environmental attitude dimension underlies responses regardless of measurement approach.
+However, the closed-ended format consistently produces higher factor loadings, with an average difference of 0.097 points favoring the traditional format.
+The largest loading disparities emerge for variables measuring government spending support (0.807 vs. 0.682) and opposition to oil industry expansion (0.710 vs. 0.539).
+This could suggest that predetermined response categories may facilitate more consistent expression of economic dimensions of environmental attitudes.
+Despite these differences, the pattern of factor loadings remains highly consistent across formats, with environmental regulation support and carbon tax maintenance emerging as the strongest indicators of the underlying attitude dimension in both measurement approaches.
+
+Scale reliability analysis reinforces the pattern of measurement equivalence with systematic precision differences.
+The environmental scale achieves good reliability in both formats, with Cronbach’s $\alpha$ values of 0.893 for closed-ended and 0.830 for open-ended responses, representing a modest difference of 0.064 points.
+While both values exceed conventional thresholds for acceptable reliability in social science research, the closed-ended format demonstrates superior internal consistency.
+The maintained reliability above 0.8 for open-ended responses demonstrates that LLM-processed attitudes retain sufficient quality for rigorous quantitative analysis.
+
+The immigration attitude scale presents a more complex measurement picture that highlights both the promise and limitations of open-ended attitude measurement.
+Four of the five immigration variables achieve acceptable factor loadings in both formats, supporting a unidimensional anti-immigration attitude scale with reasonable construct validity.
+However, one variable, attitudes about immigrants taking jobs, demonstrates a problematic loading pattern, with acceptable performance in the closed-ended format (0.590) but weak loading in the open-ended condition (0.216).
+This discrepancy suggests that the nuanced expression captured in open-ended responses for this particular item may resist compression into the broader anti-immigration attitude dimension, potentially reflecting the multifaceted nature of job competition concerns that emerge more clearly in free-text responses.
+The immigration scale reliability follows the same pattern observed for environmental attitudes, with Cronbach’s $\alpha$ values of 0.771 for closed-ended and 0.643 for open-ended responses, representing a larger reliability gap of 0.127 points.
+
+These results have important implications for understanding when open-ended formats can successfully substitute for closed-ended measurement.
+The evidence suggests that LLM-processed open-ended responses can capture the same fundamental attitude dimensions as traditional closed-ended questions, but with systematically reduced measurement precision.
+The 91.7\% of variables achieving acceptable loadings in both formats demonstrates broad measurement equivalence, while the consistent reliability reduction indicates predictable psychometric trade-offs.
+The immigration scale’s weaker performance, particularly for the job competition item, suggests that complex, multidimensional attitude objects may pose greater challenges for open-ended measurement, where the natural language expressions may capture nuances that resist unidimensional scaling.
+While exploratory factor analysis reveals additional complexity in the factor structure (detailed results available in \ref{appendix-fa-detailed}), the unidimensional scaling approach provides clear evidence that both response formats measure comparable attitude constructs with sufficient reliability for substantive political analysis.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{distribution_scales_boxplot.png}
+\caption{Scale Score Distributions by Response Format}
+\label{fig_boxplot}
+\end{figure}
+
+The boxplot distributions of the resulting attitude scales shown in \ref{fig_boxplot} provide additional evidence for the measurement equivalence between response formats while revealing systematic differences in central tendency and distributional properties.
+Both environmental and immigration scales demonstrate continuous, well-distributed score patterns across the full range of possible values, supporting their use as interval-level measures in subsequent analyses.
+The environmental attitude scale distributions show significantly higher central tendencies for open-ended responses ($M = 0.804$, $Mdn = 0.875$) compared to closed-ended responses ($M = 0.753$, $Mdn = 0.819$), with a mean difference of 0.051 scale points ($t = -6.092$, $p < 0.001$).
+This pattern indicates that when respondents express environmental attitudes in their own words, they articulate more pro-environmental positions than when selecting from predetermined Likert scale options.
+Conversely, immigration attitude scale distributions reveal lower anti-immigration sentiment in open-ended responses ($M = 0.344$, $Mdn = 0.333$) compared to closed-ended responses ($M = 0.427$, $Mdn = 0.417$), with a mean difference of $-0.083$ scale points ($t = 10.490$, $p < 0.001$).
+The distributional variability remains remarkably consistent across formats, with standard deviation ratios near unity for both scales (environmental: 1.014; immigration: 0.951), indicating that response format choice does not substantially alter the spread of attitude distributions.
+These distribution patterns corroborate the factor analytic evidence by demonstrating that both formats produce scales with comparable properties while revealing systematic format effects that mirror the social desirability and nuanced expression patterns observed in individual item analyses.
+
+\subsection{Regression}
+
+To evaluate whether attitude scales constructed from open-ended and closed-ended response formats produce equivalent analytical conclusions, we examined the relationships between socioeconomic characteristics and political attitudes across both measurement approaches.
+This analysis addresses the fundamental methodological question of whether researchers would reach similar conclusions regardless of which response format they employ.
+The evidence from \ref{fig_regressions} demonstrates that both formats identify the same key predictors and yield substantively equivalent insights about political attitude formation, though with differences in statistical precision that reflect the measurement trade-offs previously documented.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\textwidth]{fig_regression_compared.png}
+\caption{Regression Coefficients Comparison Across Treatment Conditions}
+\label{fig_regressions}
+\end{figure}
+
+The convergent validity between response formats proves remarkably robust, with 57.1\% of socioeconomic–attitude relationships achieving statistical significance in both conditions and no instances where relationships reverse direction between measurement approaches.
+Both formats consistently identify university education, language group, and regional identity as the primary determinants of environmental and immigration attitudes, leading researchers to identical conclusions about which demographic characteristics matter most for predicting political orientations.
+The ranking of predictor importance remains stable across formats, with education effects consistently emerging as the strongest for both attitude domains, followed by language and regional identity effects.
+This consistency in predictor identification demonstrates that methodological choice between response formats would not alter researchers’ fundamental conclusions about the social bases of political attitude formation.
+
+The magnitude of relationship differences between formats, while statistically detectable, proves substantively modest and follows predictable patterns that do not compromise analytical conclusions.
+The average absolute coefficient difference of 0.018 across all relationships represents small effect size variations that would rarely alter substantive interpretations in typical political science applications.
+More importantly, the direction and relative strength of relationships remain consistent across formats, ensuring that researchers would identify the same theoretical mechanisms and reach equivalent conclusions about which groups hold which attitudes.
+The modest average $R^{2}$ reduction of 0.003 for open-ended scales indicates that explanatory power differences between formats fall well within the range of measurement uncertainty that characterizes most political attitude research, suggesting that format choice represents a minor rather than consequential analytical decision for most research applications.
+
+The few instances where formats yield divergent results, most notably the Quebec–immigration relationship that achieves significance only in the open-ended condition, highlight the complementary rather than contradictory nature of these measurement approaches.
+Rather than undermining confidence in either format, these divergences suggest that different measurement approaches may capture distinct aspects of complex attitude objects, with open-ended responses potentially revealing conditional or contextually dependent patterns that resist capture through predetermined response categories.
+Crucially, these divergences supplement rather than contradict the primary analytical conclusions that emerge consistently across both formats.
+The fundamental insight that education, language, and region predict political attitudes emerges clearly from both measurement approaches, with format-specific effects providing additional nuance rather than alternative explanations.
+This pattern indicates that researchers employing either format could reach substantively equivalent conclusions about the primary determinants of political attitudes while potentially accessing complementary insights about the complexity of attitude expression in different measurement contexts.
+
+\subsection{Matching}
+
+To establish the effects of response format on political attitude measurement, we implemented propensity score matching, creating statistically equivalent groups of respondents who differed only in their random assignment to question formats.
+This approach addresses the fundamental question of whether observed differences between response formats reflect genuine measurement effects rather than artifacts of differential selection or participant characteristics.
+The matching procedure successfully achieved excellent covariate balance across all demographic and socioeconomic variables, with the maximum standardized mean difference reduced to 0.065 across all covariates, well below conventional thresholds for balance assessment.
+The final matched sample comprises 1,195 respondent pairs drawn from the original pools of 1,195 open-ended and 1,554 closed-ended participants, ensuring that treatment effect estimates reflect pure format effects rather than compositional differences between experimental conditions.
+
+As shown in \ref{fig_propensity_matching}, causal estimates reveal statistically significant and substantively meaningful format effects that vary systematically across attitude domains, providing crucial evidence about the measurement properties of LLM-enhanced open-ended questions.
+Environmental attitudes demonstrate a significant positive treatment effect of 0.050 scale points (SE = 0.009, $p < 0.001$), indicating that open-ended responses yield systematically higher levels of expressed environmental concern compared to closed-ended formats.
+This effect represents approximately 0.23 standard deviations on the environmental scale, constituting a small but meaningful difference that suggests open-ended expression facilitates more pro-environmental attitude expression.
+The highly significant $p$-value provides strong evidence that this effect reflects a genuine causal impact of response format rather than random variation or residual confounding.
+
+Immigration attitudes reveal an even more pronounced format effect, with open-ended responses producing significantly lower anti-immigration sentiment than closed-ended alternatives.
+The treatment effect of $-0.086$ scale points (SE = 0.008, $p < 0.001$) represents approximately 0.42 standard deviations on the immigration scale, indicating a moderate effect size that substantially alters how respondents express their immigration policy preferences.
+This negative coefficient demonstrates that when given the freedom to express immigration attitudes in their own words, respondents articulate positions that translate into significantly less restrictive policy preferences compared to their responses when constrained by predetermined Likert scale categories.
+The magnitude and precision of this effect suggest that response format choice can meaningfully influence substantive conclusions about public opinion on immigration policy, with open-ended formats revealing more moderate or nuanced positions that resist capture through structured scaling approaches.
+
+These divergent causal effects across attitude domains illuminate the complex relationship between measurement format and attitude expression, showing format effects vary by the substantive content and social context of the attitudes.
+The consistent direction of effects, with open-ended formats yielding more pro-environmental and less anti-immigration responses, suggests that free-text expression may facilitate more socially desirable or contextually qualified attitude expression compared to the potentially more polarized responses elicited by structured scales.
+However, the domain-specific variation in effect magnitude indicates that these format effects are not uniform across all political attitudes, requiring researchers to consider the specific characteristics of their attitude objects when choosing between measurement approaches.
+The robust statistical significance of both effects, combined with excellent balance diagnostics, provides strong causal evidence that response format choice is a meaningful methodological decision, not a neutral technical choice.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{matching_treatment_effects_comparison.png}
+\caption{Treatment Effects from Propensity Score Matching Analysis}
+\label{fig_propensity_matching}
+\end{figure}
+
+\section{Discussion}
+
+\subsection{Measurement Equivalence: What the Factor Analysis Reveals}
+
+The measurement equivalence in factor analysis discussed earlier comes with systematic precision trade-offs that matter for research design.
+Environmental attitudes achieved Cronbach’s $\alpha$ of 0.830 for open-ended responses compared to 0.893 for closed-ended, a reduction of 0.064 points.
+Immigration attitudes showed a larger reliability gap: 0.643 versus 0.771, a reduction of 0.127 points.
+Both open-ended scales exceeded the 0.7 threshold commonly cited for acceptable reliability in exploratory research, but neither matched the precision of their closed-ended counterparts.
+The closed-ended format also produced consistently higher factor loadings, with an average advantage of 0.097 points across environmental items.
+
+These reliability differences require theoretical interpretation rather than mere acknowledgment.
+Three explanations warrant consideration.
+First, lower reliability might represent measurement error introduced through LLM processing, reflecting limitations in how models interpret nuanced citizen language.
+Second, it might indicate that open-ended formats capture authentic attitudinal complexity that closed-ended questions compress into artificially coherent scales.
+Third, it could reflect both processes operating simultaneously, with some reduction attributable to measurement noise and some to genuine attitudinal heterogeneity.
+
+The pattern of which items show larger reliability reductions provides evidence for the second interpretation.
+Environmental regulation support and carbon tax attitudes, two contentious items in our battery, demonstrated the largest loading differences between formats (0.125 and 0.171 respectively).
+These are issues where citizens might hold more contextually dependent or ambivalent attitudes that resist compression into unidimensional scales.
+Conversely, belief in human-caused climate change, a less politically polarized scientific question, showed minimal loading difference (0.043) and identical distributional properties across formats.
+
+The single item failure proves particularly instructive for understanding what open-ended formats capture differently.
+The immigration job competition variable achieved acceptable loading in the closed-ended format (0.590) but failed in the open-ended condition (0.216).
+This item asks about a multidimensional phenomenon where economic anxiety, cultural concerns, and labor market beliefs intersect.
+When citizens express these attitudes in their own words, the resulting text may resist compression into the broader anti-immigration dimension because respondents articulate these concerns with complexity and qualification that predetermined response categories force into coherent positions.
+
+This interpretation aligns with Converse’s foundational work on attitude constraint, which revealed that mass political attitudes often lack the coherent structure that measurement instruments assume \citep{converse64}.
+Citizens frequently hold loosely connected attitudes susceptible to contextual influence rather than tightly organized belief systems.
+If this characterization is accurate, the question becomes whether measurement instruments should impose coherence through standardized response categories or preserve the underlying fragmentation through more flexible measurement approaches.
+Our results suggest that open-ended formats lean toward the latter, capturing attitudinal structure as it actually exists rather than as researchers’ conceptual frameworks presume it should exist.
+
+This finding gains additional significance when considered against the external validity evidence.
+Despite lower internal consistency, open-ended scales maintained virtually identical relationships with socioeconomic predictors.
+Education, language, and regional effects emerged with nearly equivalent magnitudes across formats.
+If lower reliability reflected pure measurement noise, we would expect attenuated relationships with theoretically relevant predictors.
+The preservation of external validity patterns indicates that reduced internal consistency captures something other than random error.
+
+\subsection{External Validity: The Socioeconomic Predictor Evidence}
+
+The stability of socioeconomic predictors across response formats provides crucial evidence for measurement validity that speaks directly to concerns about whether LLM processing introduces systematic distortion.
+Decades of research using closed-ended questions have documented how education, language, and geography shape political attitudes.
+If LLM coding introduced systematic bias or measurement noise sufficient to compromise construct validity, these core relationships should attenuate, distort, or reverse.
+None of these patterns appear in our data.
+
+The modest average $R^{2}$ reduction of 0.003 for open-ended scales reinforces this interpretation.
+Explanatory power differences between formats fall well within the range of measurement uncertainty that characterizes attitude research more generally.
+This minimal reduction in explained variance, combined with stable coefficient patterns, indicates that lower reliability does not translate into compromised external validity.
+The open-ended scales capture sufficient valid variance to reproduce the theoretical relationships that political science research depends upon.
+
+The few instances where formats yield divergent results illuminate the complementary rather than contradictory nature of these measurement approaches.
+The Quebec–immigration relationship achieved significance only in the open-ended condition, suggesting that free-text expression may reveal contextually dependent patterns that predetermined categories cannot capture.
+Rather than representing measurement inconsistency, this divergence may indicate that different formats access different aspects of complex attitude objects.
+Quebec residents may hold more nuanced or conditionally expressed immigration attitudes that resist capture through standardized scaling but emerge clearly when respondents articulate positions in their own words.
+
+This pattern connects to broader debates about measurement validity in political science.
+\citet{baden_etal22} argue that computational text analysis has “prioritized technological over validity concerns,” creating a fundamental misalignment between automated methods and social science measurement goals.
+Our external validity evidence addresses this concern directly.
+The preservation of theoretically expected relationships demonstrates that LLM-enhanced measurement maintains construct validity despite lower reliability.
+This finding suggests that the validity–reliability trade-off may be less severe than critics of automated methods have feared, at least for capturing the core socioeconomic determinants of political attitudes that constitute much of political behavior research.
+
+\subsection{The Directional Differences}
+
+The systematic directional differences we observe, more pro-environmental and less anti-immigration responses in open-ended formats, require interpretation because they could reflect either genuine format effects or LLM coding biases.
+Three competing explanations warrant evaluation: cognitive processing differences driven by response format, social desirability interactions with question structure, or systematic coding patterns introduced through LLM training data.
+
+The LLM bias explanation would suggest that model training on internet corpora creates systematic tendencies toward socially desirable positions that distort how responses get coded.
+This hypothesis is, on its surface, consistent with our directional findings: the shifts toward more pro-environmental and less anti-immigration positions both move in a conventionally socially desirable direction.
+However, other patterns in our data argue against this bias being the sole or primary driver.
+
+First, the preservation of socioeconomic predictor relationships demonstrates that LLM processing maintains the structural validity of attitude measures.
+If coding bias operated strongly enough to shift mean attitudes by 0.05–0.08 scale points, we should observe distorted relationships between attitudes and their established determinants.
+Education effects, language effects, and regional effects should attenuate or strengthen systematically if LLM processing introduces bias that varies across demographic groups.
+The stable coefficient patterns indicate that whatever produces directional differences operates equivalently across socioeconomic subgroups, preserving the fundamental structure of attitude formation.
+
+Second, the high consensus rates (92.6\% average) across ten independent coding iterations indicate that LLM classifications are systematic rather than erratic.
+When the same response receives identical codes in nine or ten independent processing attempts, this demonstrates that the model converges on stable interpretations rather than generating stochastic variation.
+If bias operates, it operates consistently, which actually supports measurement reliability rather than undermining it.
+
+The cognitive processing explanation suggests that response format engages different mental processes that yield genuinely different attitude expressions.
+When selecting among predetermined categories, respondents may anchor to extreme options or select positions based on recognition rather than recall.
+Open-ended responses require generating rather than recognizing positions, potentially engaging more deliberative processing.
+This interpretation finds support in research on survey satisficing, which demonstrates that closed-ended formats enable cognitive shortcuts that open-ended questions could prevent \citep{krosnick91}.
+The higher missing data rates for open-ended questions requesting quantitative estimates provide additional support.
+Most respondents who did answer provided qualitative expressions rather than numbers, suggesting that citizens hold relative preferences that open-ended formats reveal but closed-ended formats force into absolute categories.
+
+The social desirability interaction explanation proposes that open-ended formats alter how social desirability pressures operate.
+For environmental attitudes, free-text expression may make pro-environmental positions feel more socially appropriate to articulate, leading to more extreme expressions.
+For immigration attitudes, the act of articulating potentially restrictive preferences in one's own words may activate normative concerns that selecting a predetermined category bypasses.
+This interpretation accounts for the domain-specific directionality and aligns with research documenting substantial gaps between stated and revealed preferences in immigration attitude measurement \citep{hainmueller_hopkins14}.
+
+We cannot definitively adjudicate among these explanations with current data.
+All three mechanisms likely operate simultaneously, with their relative importance varying across attitude domains and question types.
+The crucial methodological point is that while the LLM bias explanation is plausible and consistent with the directional shifts, the preservation of structural validity provides strong evidence that genuine format effects are also a primary driver of the observed differences.
+This distinction matters for research design: if differences reflect bias, researchers should avoid open-ended formats or develop correction procedures; if differences reflect genuine format effects, researchers should choose formats based on which cognitive processes and attitude expressions best serve specific research goals.
+
+The propensity score matching analysis provides the strongest causal evidence. After creating statistically equivalent groups, the treatment effects for both environmental ($p < 0.001$) and immigration attitudes ($p < 0.001$) remained significant and substantial. This causal evidence, combined with preserved external validity, supports interpreting these as genuine format effects, not measurement artifacts.
+
+\subsection{Why LLMs Succeed Where Previous Methods Failed}
+
+Our findings gain significance when situated against documented failures of previous automation attempts. Dictionary methods, topic models, and supervised machine learning each encountered barriers preventing scalable analysis of citizen survey responses. Understanding why LLMs overcome these limitations illuminates the specific capabilities required for processing citizen discourse.
+
+Dictionary-based approaches treat words as context-independent units, systematically misinterpreting rhetorical complexity \citep{tausczik_pennebaker10}. When respondents write "I would support immigration if they followed the rules," dictionary methods detect "support" and "immigration" without capturing the conditional qualification that restricts support. LLMs process such responses through contextual understanding, enabling interpretation that accounts for syntactic structure, conditional statements, and semantic relationships. 
+
+Topic modeling techniques perform poorly on short texts and require extensive human judgment \citep{pietsch_lessmann18}. Latent Dirichlet Allocation relies on word co-occurrence patterns within documents, but brief survey responses lack sufficient structure for reliable inference. LLMs overcome this through a fundamentally different approach: leveraging patterns learned from massive training corpora to classify individual short texts. A response like "yes, climate change is real" contains too few words for topic modeling but provides sufficient content for LLM classification without requiring document-level co-occurrence structure.
+
+Supervised machine learning requires large training datasets with expert-labeled examples, creating a catch-22 where automating analysis demands extensive manual coding as prerequisite. Our two-stage approach eliminates this requirement. An advanced LLM analyzes question metadata to generate variable-specific prompts; a faster model then applies these prompts through zero-shot learning, requiring no labeled examples. This fundamentally changes survey analysis economics: processing 223,639 classifications in under an hour for under three dollars, a cost reductions exceeding two orders of magnitude compared to manual coding.
+
+These advantages, contextual understanding, semantic processing for short texts, zero-shot classification, and systematic consensus validation, explain why LLMs succeed where previous methods failed. Our findings align with \citet{grimmer_stewart13}'s framework emphasizing that models can be useful even when imperfect, that substantive validation remains essential, and that automated methods should augment human interpretation. The measurement equivalence we document provides this validation while expanding what automated methods can achieve for political science research.
+
+\subsection{Measurement Precision Versus Captured Complexity}
+
+Our findings reveal a question that we cannot definitively resolve but must articulate clearly: Do the lower factor loadings and reliability coefficients in open-ended formats represent measurement error requiring correction, or do they capture authentic attitudinal complexity that closed-ended formats artificially compress?
+The evidence permits both interpretations, and the appropriate answer likely varies across research contexts and specific attitude objects.
+
+The measurement error interpretation holds that predetermined response categories facilitate more consistent attitude expression by providing clear conceptual anchors and eliminating irrelevant response variation.
+When respondents select among options like “strongly agree” to “strongly disagree,” they map their internal attitudes onto a standard scale that researchers can analyze comparably across individuals.
+The higher reliability of closed-ended formats reflects successful standardization that reduces noise while preserving signal.
+Open-ended responses, by contrast, introduce variation through how citizens phrase attitudes, their verbal fluency, their attention to the task, and idiosyncrasies of expression that LLM processing cannot perfectly eliminate.
+Lower reliability indicates this noise contaminating measurement.
+
+Several patterns support this. The environmental regulation item showed the largest loading difference (0.125 points) and one of the largest variability increases (SD ratio = 1.30). If this variability reflected authentic complexity, we should see new dimensions. However, the unidimensional factor structure suggests this additional variability is noise, not substantive complexity.
+
+The captured complexity interpretation holds that closed-ended questions impose artificial coherence on attitudes that citizens actually hold in more fragmented, contextually dependent ways.
+Predetermined response categories force respondents to place complex, multidimensional attitudes onto simplified scales, creating spurious internal consistency through measurement constraint rather than genuine attitudinal structure.
+Open-ended formats reveal this underlying complexity by allowing expression of nuance, ambivalence, and context dependence that standardized scaling flattens.
+Lower reliability reflects authentic heterogeneity in how citizens hold and express political attitudes rather than measurement noise requiring correction.
+
+The immigration job competition item provides the strongest evidence for this interpretation.
+This variable achieved acceptable loading when measured through the closed-ended format (0.590) but failed in the open-ended condition (0.216), falling well below the 0.3 threshold for acceptable loading.
+The closed-ended question forced this complex, multidimensional concern into the broader anti-immigration scale.
+The open-ended format revealed that when citizens articulate job competition concerns in their own words, these expressions resist compression into unidimensional anti-immigration attitudes because respondents can express economic anxiety, labor market beliefs, and cultural concerns in ways that do not align with standard immigration attitude dimensions.
+
+This pattern aligns with theoretical work on attitude constraint and public opinion structure.
+Converse documented that mass attitudes often lack the coherent organization that elite discourse and measurement instruments assume \citep{converse64}.
+Zaller’s Receive–Accept–Sample (RAS) model proposes that citizens sample from heterogeneous considerations when forming attitude expressions rather than reporting stable, well-organized preferences \citep{zaller92}.
+If these characterizations accurately describe political attitude structure, measurement instruments that impose coherence through standardization may systematically misrepresent how citizens actually hold political attitudes.
+Open-ended formats, by preserving rather than eliminating response heterogeneity, might provide more valid measurement of attitudes that genuinely lack tight internal organization.
+
+The evidence does not permit definitive resolution between these interpretations.
+Both likely operate simultaneously, with some reliability reduction attributable to measurement noise and some to authentic complexity.
+The appropriate interpretation probably varies across attitude domains, with highly crystallized attitudes, where citizens hold clear, stable positions, showing smaller format differences, while emerging or multidimensional issues demonstrate larger divergences that reflect genuine complexity rather than measurement error.
+
+This unresolved trade-off has implications for research design and measurement choice.
+Researchers prioritizing tight measurement properties, cross-study comparability, and maximum precision should employ closed-ended formats that provide higher reliability through standardization.
+Researchers exploring emerging issues, investigating attitude structure itself, or studying populations where attitudinal crystallization remains uncertain should consider open-ended approaches that preserve complexity even at the cost of lower internal consistency.
+LLMs enable this choice by making both approaches analytically feasible at scale, transforming what was once a practical constraint into a substantive methodological decision about which attitude properties researchers seek to measure.
+
+\subsection{Limitations and Boundary Conditions}
+
+
+Several limitations constrain the generalizability... The most significant concerns missing data patterns. Open-ended questions achieved lower completion rates (e.g., 58.4\% vs 85.4\% on the environmental scale). Non-response concentrated in quantitative estimate questions, where 28–38\% of open-ended respondents left answers blank versus 4–8\% for closed-ended formats.
+This differential non-response introduces selection concerns that our analytical approach cannot fully address.
+Propensity score matching handles observable differences in who completes open-ended versus closed-ended questions, but unobservable factors related to willingness to engage open-ended items may correlate with attitude extremity, political engagement, or rhetorical confidence.
+If respondents most willing to articulate attitudes in their own words hold systematically different positions than those who prefer selecting predetermined options, our results may overestimate measurement equivalence for the full population of potential respondents.
+
+However, the missing data patterns themselves provide substantive information about attitude measurement.
+We observed that even when open-ended respondents did answer quantitative estimate questions, they frequently provided qualitative expressions (“more spending,” “less immigration”) rather than specific numeric values.
+This pattern suggests that high non-response rates may reflect genuine response uncertainty on complex policy questions rather than measurement failure.
+Citizens may hold relative preferences about policy directions without maintaining the precise quantitative positions that closed-ended questions force them to select.
+If this interpretation holds, the missing data reveal underlying attitudinal structure rather than representing pure selection bias.
+
+The focus on environmental and immigration attitudes, while strategically chosen for their measurement complexity and political relevance, limits our ability to generalize findings to other attitude domains.
+These policy areas demonstrate high political salience, substantial social desirability pressures, and documented measurement challenges.
+Attitudes toward less contentious topics or more straightforward factual beliefs might show different equivalence patterns.
+The domain-specific nature of format effects we observed, opposite directional differences for environmental versus immigration attitudes, suggests that measurement properties vary across issue areas in ways that require domain-specific validation rather than assuming uniform applicability.
+
+The Canadian sample introduces additional constraints on generalizability.
+Bilingual survey administration, while enabling methodological insights about LLM language processing capabilities, creates a specific measurement context that may not translate to monolingual populations.
+The political salience of environmental and immigration issues in Canadian politics may differ from other national contexts, affecting how citizens engage with these questions and whether they exhibit similar format effects.
+Regional and linguistic heterogeneity within Canada, while providing valuable variation for analyzing socioeconomic predictors, may limit direct comparison to more homogeneous national contexts.
+
+The reliance on a single LLM architecture (Gemini 2.0 Flash Lite for classification, Gemini 2.5 Pro for prompt generation) leaves questions about sensitivity to computational approach.
+Different models or prompting strategies might yield different levels of measurement equivalence.
+Our results demonstrate the potential of LLM-enhanced methodology but do not establish that all implementation choices produce equivalent outcomes.
+The specific decisions we made about temperature settings (1.0), consensus validation procedures (10 iterations), and prompt generation strategies represent one possible approach whose performance may not generalize to alternative technical configurations.
+
+These limitations establish important boundary conditions for interpreting our findings.
+We demonstrate that LLM-processed open-ended responses can measure the same latent factors as closed-ended questions within specific constraints: for politically salient attitude domains, in contexts accepting higher missing data rates, with populations willing to engage textual responses, and using carefully developed prompting strategies.
+Claims about measurement equivalence should not extend beyond these established boundaries without empirical validation in new contexts.
+
+\subsection{Implications for Survey Research Practice}
+
+These findings carry several practical implications for survey researchers considering whether to employ open-ended questions for quantitative attitude measurement.
+Most directly, our results establish that LLM-processed open-ended responses can produce valid measures of political attitudes suitable for rigorous statistical analysis.
+The demonstrated measurement equivalence, stable external validity relationships, and acceptable reliability coefficients indicate that open-ended formats represent a viable methodological option rather than merely a theoretical possibility.
+
+However, researchers should recognize that this viability comes with trade-offs that require careful evaluation based on specific research goals.
+Closed-ended questions probably provide higher measurement precision, with, in our case, reliability advantages ranging from 0.064 to 0.127 Cronbach’s alpha points across our attitude scales.
+For research prioritizing maximum internal consistency, cross-study comparability using established instruments, or hypothesis testing where tight measurement properties maximize statistical power, closed-ended formats would be the appropriate choice.
+The accumulated decades of validation work on closed-ended attitude scales represent valuable scientific infrastructure that researchers should not abandon without compelling substantive reasons.
+
+The specific circumstances favoring open-ended approaches emerge clearly from our findings.
+Researchers should consider open-ended formats when studying emerging issues that lack established measurement batteries, when existing closed-ended scales face documented validity concerns, or when capturing the reasoning behind attitudes matters as much as measuring their direction and intensity.
+The longitudinal capabilities of open-ended questions, where identical wording administered over time can reveal shifting vocabularies and conceptual frameworks, suggest particular value for monitoring political discourse evolution \citep{geer88}.
+
+The ability to detect emerging concerns before they achieve mainstream salience represents a distinctive advantage of open-ended formats that closed-ended approaches cannot replicate.
+Traditional questionnaire development cycles require issues to become sufficiently salient for researchers to recognize their importance, develop appropriate question batteries, and field surveys.
+Open-ended questions enable real-time detection of emerging themes in citizen discourse, creating an early warning system for issue evolution.
+This capability proves especially valuable in rapidly changing political environments where the substantive content of debate transforms faster than survey development cycles can accommodate.
+
+However, researchers adopting open-ended approaches must address several practical considerations that closed-ended formats do not require.
+The higher missing data rates we observed, particularly for questions requesting quantitative estimates, necessitate explicit strategies for handling non-response.
+Multiple imputation, pattern-mixture models, or analysis explicitly conditioning on response propensity may prove necessary to address selection concerns.
+The systematic differences in who completes open-ended versus closed-ended questions require acknowledgment and sensitivity analyses examining whether results hold across respondent subgroups with different completion patterns.
+
+Prompt development, while less time-consuming than manual coding, requires careful attention and validation.
+Our two-stage approach, where an advanced LLM generates variable-specific prompts from question metadata and sample responses, succeeded in producing high-consensus classifications.
+But this success depended on providing sufficient context about measurement goals, response categories, and domain-specific terminology.
+Researchers implementing LLM-enhanced measurement should expect to invest effort in prompt refinement, consensus validation procedures, and systematic documentation that enables reproducibility.
+
+The cost–benefit analysis for open-ended questions has fundamentally changed.
+Processing a full survey of open-ended answers in under an hour for under three dollars represents a dramatic reduction compared to manual coding that might require weeks or months and thousands of dollars in labor costs.
+This economic transformation makes large-scale open-ended question usage feasible for research projects that could not sustain manual coding expenses.
+
+These practical implications suggest that the field could be moving toward a more pluralistic methodological approach where closed-ended and open-ended questions serve complementary rather than competing functions.
+Closed-ended formats provide the precision and comparability necessary for hypothesis testing and cumulative research programs building on established measurement instruments.
+Open-ended formats offer flexibility and depth for exploratory research, emerging issues, and investigating attitude structure itself.
+LLMs enable this pluralism by making both approaches analytically tractable at the scales required for political science research.
+
+\section{Conclusion}
+
+In 1932, Rensis Likert confronted an absurd proliferation of possible classifications and resolved it through standardization. His solution, the now-ubiquitous Likert scale, represented a reasonable compromise given the analytical constraints of his era: researchers could group stimuli systematically and analyze them tractably, but only by accepting predetermined categories that forced complex attitudes into simplified structures. For nearly a century, survey researchers have lived with this compromise. They have recognized that complex political attitudes resist reduction to standardized scales yet accepted this limitation because the alternative, analyzing open-ended responses at scale, proved impractical.
+
+This research demonstrates that the technological constraints justifying Likert’s compromise no longer bind. We show that LLM-processed open-ended responses can measure the same latent factors as traditional closed-ended questions. Both formats form coherent attitude scales (on environment and immigration) and, crucially, maintain substantively equivalent external validity, the same socioeconomic predictors, such as education and language, matter in the same way. However, this equivalence comes with a critical trade-off: open-ended formats show systematically lower measurement reliability while capturing authentic attitudinal complexity that closed-ended formats artificially compress.
+
+This trade-off is not simply measurement error; it reveals the fragmented, context-dependent nature of mass attitudes that closed-ended questions force into artificial coherence. This was most evident when an item on job competition, which fit neatly into the closed-ended immigration scale, failed to load in the open-ended format, revealing nuances that resisted unidimensional compression. Furthermore, we found systematic directional shifts, with open-ended formats yielding more pro-environmental and less anti-immigration responses. This advance is not without new challenges: these formats, for instance, produced substantially higher missing data on complex policy questions, introducing new selection concerns that researchers must address.
+
+This transformation of practical constraint into substantive methodological choice represents our central contribution. Where Likert saw an absurd proliferation requiring standardization, LLMs offer systematic classification without forcing predetermined structure. Researchers no longer face a stark choice between analytical tractability and substantive complexity. They now navigate questions about which cognitive processes and attitude expressions best serve specific research goals, which measurement properties matter most for particular applications, and how to balance precision against the richness of citizen discourse.
+
+Yet within these constraints, our findings establish a proof of concept with far-reaching implications.
+The methodological infrastructure required for LLM-enhanced survey research exists and functions reliably.
+The economic transformation is dramatic: processing over 200,000 classifications in under an hour for under three dollars makes large-scale open-ended question usage feasible for research projects that could not sustain manual coding expenses.
+The measurement properties prove acceptable: reliability coefficients exceed conventional thresholds, factor structures remain coherent, external validity relationships persist.
+The technological barriers that have confined survey research to closed-ended formats for generations might not be anymore.
+
+This research does not conclude a long-standing debate but rather reopens it.
+Likert’s scale resolved key practical issues of his time, yet it also narrowed the scope of methodological inquiry for decades.
+Today, the question of when to use open-ended versus closed-ended formats can once again be guided by substantive and theoretical considerations rather than analytical convenience.
+LLMs now make it feasible to analyze open-ended responses with a level of consistency and scalability once limited to standardized items.
+Closed-ended formats will continue to be well suited for certain objectives, but researchers can now strategically integrate both approaches according to their measurement goals.
+In this sense, modern computational tools do not close a chapter, they revive a conversation about how best to capture the complexity of human attitudes, a dialogue that the field can now pursue with renewed empirical depth.
+
+\printbibliography
+
+\include{statements}
+
+\clearpage
+
+\appendix
+
+\include{appendices}
+
+\end{document}

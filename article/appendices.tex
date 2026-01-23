@@ -1,0 +1,460 @@
+\section{Scree Plot Analysis}
+\label{appendix-scree-plot}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{scree_plot_parallel_analysis.png}
+  \caption{Scree Plot with Parallel Analysis}
+  \label{fig-appendix-scree}
+\end{figure}
+
+\clearpage
+
+\section{Detailed Exploratory Factor Analysis}
+\label{appendix-fa-detailed}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{factor_loadings_comparison.png}
+  \caption{Factor Loadings Comparison: Closed vs Open Responses Formats}
+  \label{fig-appendix-fa}
+\end{figure}
+
+\clearpage
+
+\section{Survey Questions Wording}
+\label{appendix-wording}
+
+\subsection{Demographic Questions}
+\begin{itemize}
+  \item How old are you? (Please answer using numbers only)
+  \item To which gender do you identify?
+  \item In which province or territory do you live?
+  \item What is your type of dwelling?
+  \item What language do you speak most often at home?
+  \item What is the highest level of education that you have completed?
+  \item What is the average income of your household before taxes?
+\end{itemize}
+
+\subsection{Environment Questions}
+\begin{itemize}
+  \item How much should the federal government spend on the environment?
+  \item Environmental regulation should be stricter, even if it leads to consumers having to pay higher prices.
+  \item When there is a conflict between protecting the environment and creating jobs, jobs should come first.
+  \item What do you think is the main cause of climate change?
+  \item To what extent should the government support the oil industry?
+  \item The threat of climate change is exaggerated
+  \item The federal carbon tax should be maintained as an environmental measure
+\end{itemize}
+
+\subsection{Immigration Questions}
+\begin{itemize}
+  \item Too many recent immigrants just don't want to fit in Canadian society.
+  \item Immigrants take jobs away from Canadians.
+  \item How much should the federal government spend on immigrants and minorities?
+  \item How many immigrants should the country admit?
+  \item Canada's border controls should be strengthened to limit the number of people applying for refugee status
+\end{itemize}
+
+\subsection{Vote Choice Question}
+\begin{itemize}
+  \item Which party did you vote for during the 2025 federal election?
+\end{itemize}
+
+\clearpage
+
+\section{Prompt wordings}
+\label{appendix-prompts}
+
+\subsection{Master Prompt Wording}
+\label{appendix-master-prompt}
+
+{\small
+\begin{verbatim}
+You are an expert at creating optimized prompts for AI systems that process 
+survey data. Your task is to generate a specialized prompt for coding 
+open-ended survey responses to a specific survey variable.
+
+## Variable Information:
+- Variable name: {variable_name}
+- Question text: {question_text}
+- Variable type: {variable_type}
+- Domain/topic: {variable_domain}
+- Sample response values: {sample_values}
+
+## Response Categories/Options:
+{categories_info}
+
+## Sample Open-ended Responses (if available):
+{sample_responses}
+
+## Language Information:
+{language_info}
+IMPORTANT: This is a bilingual survey (French and English). Responses may be 
+in either language.
+
+## Your Task:
+Generate an optimal prompt consisting of TWO parts:
+
+### PART 1: SYSTEM MESSAGE
+Create a system message that:
+- Defines the AI assistant's role and expertise for this specific variable type
+- Explains the task clearly (mapping open responses to codes)
+- Provides domain-specific guidance relevant to this variable's topic
+- Emphasizes returning only the numeric code
+- Includes any special considerations for this variable type
+- CRITICAL: Explicitly mentions handling both French and English responses
+- Provides key French translations for common responses (oui=yes, non=no, etc.)
+- Warns against coding valid French responses as Don't know
+
+### PART 2: USER TEMPLATE
+Create a user message template that:
+- Uses placeholder variables: {{variable_name}}, {{question_text}}, 
+  {{options_block}}, {{open_response}}
+- Is formatted clearly for easy reading
+- Includes appropriate context for this variable type
+- Follows this general structure but adapt the labels/sections as needed:
+
+Variable: {{variable_name}}
+Question: {{question_text}}
+
+[Appropriate section title for the options]:
+{{options_block}}
+
+Open-ended response:
+"{{open_response}}"
+
+## Requirements:
+- Be specific to this variable's domain and characteristics
+- Consider the types of responses likely for this question
+- Optimize for accuracy in mapping responses to the correct codes
+- Keep instructions clear and concise
+- Ensure the prompt will work well for the sample responses shown
+- MUST handle bilingual responses correctly (French and English)
+- Include guidance on common French political terms if relevant 
+  (e.g., Libéral = Liberal Party)
+- Provide clear French-English mappings for agreement/disagreement terms
+
+## Output Format:
+IMPORTANT: Return ONLY valid JSON in this exact format. Do not include any 
+other text or explanation:
+
+{
+  "system_message": "Your system message here...",
+  "user_template": "Your user template here..."
+}
+
+Generate the optimized prompt now:
+\end{verbatim}
+}
+
+\clearpage
+
+\subsection{Variable Prompt Wording}
+\label{appendix-variable-prompt}
+
+{\small
+\begin{verbatim}
+### System Message
+
+You are an expert AI assistant specializing in coding survey data for 
+political science and public opinion research. Your task is to analyze an 
+open-ended survey response and assign the single most appropriate numeric 
+code based on the provided categories. The response is for a question about 
+federal government spending on the environment.
+
+## Task Instructions:
+
+1. **Analyze the Response**: Carefully read the open-ended response to 
+   understand the respondent's opinion on the level of environmental 
+   spending.
+
+2. **Identify Sentiment**: Determine if the respondent wants to spend MORE, 
+   LESS, or maintain the SAME level of spending.
+
+3. **Assign Code**: Select the single numeric code that best corresponds to 
+   this sentiment.
+
+4. **Output**: Return ONLY the single numeric code. Do not provide any 
+   explanation, text, or punctuation.
+
+## Critical Considerations for this Variable:
+- **Bilingual Survey**: This is a bilingual survey. Responses may be in 
+  English or French (FR-CA). You MUST correctly interpret both languages. 
+  Do NOT code a valid French response as 'Don't know' (6).
+- **Focus on Quantity**: The core of the question is about the *amount* of 
+  spending. Look for words indicating an increase, decrease, or maintenance 
+  of the current level.
+- **Typo in Options**: Note that the option 'Spend about the same as snow' 
+  contains a typo and should be interpreted as 'Spend about the same as now'.
+
+## French Language Guidance:
+To ensure accuracy, use the following French-to-English translations for 
+common terms related to this question:
+
+**More / Increase:**
+- `Plus` = More
+- `Augmenter` / `Augmentation` = Increase
+- `Davantage` = More
+- `Beaucoup plus` = A lot more
+- `Plus qu'en ce moment` = More than right now
+
+**Less / Decrease:**
+- `Moins` = Less
+- `Diminuer` / `Réduire` = Decrease / Reduce
+- `Beaucoup moins` = A lot less
+
+**Same / Maintain:**
+- `Pareil` / `La même chose` = The same
+- `Comme maintenant` = Like now
+- `Le même montant` = The same amount
+- `Garder le même` = Keep the same
+
+**Don't Know / Refusal:**
+- `Je ne sais pas` / `Sais pas` / `NSP` = I don't know
+- `Aucune idée` = No idea
+
+If the response is ambiguous, expresses no opinion, or is a clear 'don't know' 
+or refusal to answer (in either language), use code 6.
+
+### User Template
+
+Variable: {variable_name}
+Question: {question_text}
+
+Response Options & Codes:
+{options_block}
+
+Open-ended response:
+"{open_response}"
+
+### Response Options
+
+1: Spend less
+4: Spend about the same as snow
+5: Spend more
+6: Don't know/Prefer not to answer
+\end{verbatim}
+}
+
+\clearpage
+
+\subsection{Textual Literacy Prompt Wording}
+\label{appendix-literacy-prompt}
+
+{\small
+\begin{verbatim}
+You are a textual literacy assessor. Analyze the following concatenated survey 
+responses from a single participant and provide a literacy score between 0 and 
+10, where:
+
+- 0 = literacy level of a severely handicapped child (minimal vocabulary, 
+      basic errors, incoherent)
+- 10 = literacy level of a Harvard literature professor (sophisticated 
+       vocabulary, complex syntax, nuanced expression)
+
+Consider these factors:
+- Vocabulary sophistication and range
+- Grammatical accuracy and complexity
+- Coherence and logical flow
+- Spelling and punctuation
+- Ability to express nuanced ideas
+- Use of appropriate register for the context
+
+Participant's responses (separated by |): "[concatenated_text]"
+
+Return your assessment in this exact JSON format:
+{
+  "literacy_score": [number between 0 and 10],
+  "justification": "[brief explanation of the score]"
+}
+
+Important: The score must be a number between 0 and 10 (can include decimals 
+like 7.5).
+\end{verbatim}
+}
+
+\clearpage
+
+\subsection{Strategic Vote Prompt Wording}
+\label{appendix-strategic-prompt}
+
+{\small
+\begin{verbatim}
+Analyze this Canadian federal voting response and extract two pieces of 
+information:
+
+Which federal party did the respondent vote for? Use ONLY these party codes: 
+lpc, cpc, bq, ndp, gpc, ppc, or other
+
+Does the respondent seem to have voted strategically? (1 for strategic, 0 for 
+not strategic)
+
+Response to analyze: response_text
+
+Return your answer in this exact JSON format: 
+{ party: [party code], strategic: [0 or 1] }
+
+Important guidelines:
+
+Use ONLY these exact party codes (lowercase):
+
+- lpc = Liberal Party of Canada / Parti libéral du Canada / Libéral / 
+        Liberal / PLC
+- cpc = Conservative Party of Canada / Parti conservateur du Canada / 
+        Conservateur / Conservative / PCC
+- bq = Bloc Québécois / Bloc québécois / Bloc / BQ
+- ndp = New Democratic Party / Nouveau Parti démocratique / NPD / NDP
+- gpc = Green Party of Canada / Parti vert du Canada / Vert / Green / PVC
+- ppc = People's Party of Canada / Parti populaire du Canada / PPC
+- other = any other party or unclear
+
+Responses may be in French or English
+
+Look for words like strategic, to block, to prevent, par stratégie, pour 
+bloquer, pour empêcher for strategic voting
+
+If unclear about strategic voting, default to 0 (not strategic)
+
+If party is unclear, use 'other'
+\end{verbatim}
+}
+
+\clearpage
+
+\section{Missing Data Analysis}
+\label{appendix-missing-data}
+
+\subsection{Missing Data Rates by Item and Response Format}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{llcccp{1.5cm}}
+    \toprule
+    \textbf{Domain} & \textbf{Item} & \textbf{Closed \%} & \textbf{Open \%} & \textbf{$\Delta$} & \textbf{\textit{p}} \\
+    \midrule
+    Immigration & Gov Spending & 7.8 & 37.8 & +30.0 & <.001 \\
+    Immigration & Admit Less & 5.4 & 32.7 & +27.3 & <.001 \\
+    Environment & Gov Spending & 3.9 & 28.4 & +24.5 & <.001 \\
+    Environment & Anti Oil Support & 2.0 & 9.8 & +7.8 & <.001 \\
+    Immigration & Don't Fit In & 4.8 & 10.9 & +6.1 & <.001 \\
+    Environment & Priority & 2.1 & 4.7 & +2.6 & <.001 \\
+    Environment & Climate Real & 1.5 & 3.9 & +2.4 & <.001 \\
+    Environment & Regulation & 1.5 & 3.8 & +2.3 & <.001 \\
+    Immigration & Stricter Border & 8.1 & 10.3 & +2.2 & .055 \\
+    Immigration & Take Jobs & 1.3 & 3.0 & +1.7 & .003 \\
+    Environment & Climate Human & 0.9 & 1.3 & +0.3 & .492 \\
+    Environment & Carbon Tax & 10.5 & 10.3 & $-$0.2 & .885 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Missing data rates by survey item and response format}
+  \label{table-missing-data}
+\end{table}
+
+\noindent\textit{Note:} $\Delta$ = difference in percentage points (Open -- Closed). The three items with highest non-response (>24 percentage points) all request quantitative policy estimates. All tests are chi-square tests of independence.
+
+\subsection{Survey Fatigue Analysis}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{fig_na_fatigue_analysis.png}
+  \caption{Missing data rates by question position and response format}
+  \label{fig-appendix-survey-fatigue}
+\end{figure}
+
+\noindent\textit{Note:} Missing data rates by question position (1--12) and response format. Lines show linear trends with 95\% confidence bands. Neither format shows significant correlation between position and non-response ($\rho_{\text{closed}}$ = 0.49, \textit{p} = .11; $\rho_{\text{open}}$ = 0.39, \textit{p} = .21), and the negative interaction term ($\beta$ = $-$0.031, \textit{p} = .018) indicates slightly less fatigue progression in open-ended conditions.
+
+\clearpage
+
+\section{Table of Descriptive Statistics}
+\label{appendix-descriptive-table}
+
+% latex table generated in R 4.5.2 by xtable 1.8-4 package
+% Wed Nov 12 10:08:15 2025
+\begin{table}[H]
+\centering
+\caption{Descriptive Statistics Comparison: Open-ended vs. Closed-ended Treatment. Domain: Env = Environment, Immi = Immigration. Stat: SD = Standard Deviation. Each variable shows three statistics with corresponding Open and Closed treatment values, their ratio (Open/Closed), and difference (Open - Closed).} 
+\label{tab:descriptive_statistics}
+\begingroup\small
+\begin{tabular}{lllrrrr}
+  \toprule
+Domain & Variable & Stat & Open & Closed & Ratio & Diff \\ 
+  \midrule
+Env & Against oil support & Mean & 0.773 & 0.769 & 1.01 & 0.004 \\ 
+  Env & Against oil support & Median & 0.750 & 1.000 & 0.75 & -0.250 \\ 
+  Env & Against oil support & SD & 0.287 & 0.292 & 0.98 & -0.005 \\ 
+  Env & Carbon tax (maintained) & Mean & 0.741 & 0.698 & 1.06 & 0.043 \\ 
+  Env & Carbon tax (maintained) & Median & 1.000 & 0.667 & 1.50 & 0.333 \\ 
+  Env & Carbon tax (maintained) & SD & 0.385 & 0.332 & 1.16 & 0.053 \\ 
+  Env & Climate change (human cause) & Mean & 0.899 & 0.900 & 1.00 & -0.001 \\ 
+  Env & Climate change (human cause) & Median & 1.000 & 1.000 & 1.00 & 0.000 \\ 
+  Env & Climate change (human cause) & SD & 0.301 & 0.300 & 1.00 & 0.001 \\ 
+  Env & Climate change (not exaggerated) & Mean & 0.934 & 0.869 & 1.07 & 0.065 \\ 
+  Env & Climate change (not exaggerated) & Median & 1.000 & 1.000 & 1.00 & 0.000 \\ 
+  Env & Climate change (not exaggerated) & SD & 0.194 & 0.208 & 0.93 & -0.014 \\ 
+  Env & Environment priority over jobs & Mean & 0.711 & 0.581 & 1.22 & 0.130 \\ 
+  Env & Environment priority over jobs & Median & 0.750 & 0.750 & 1.00 & 0.000 \\ 
+  Env & Environment priority over jobs & SD & 0.313 & 0.268 & 1.17 & 0.045 \\ 
+  Env & Government spending (more) & Mean & 0.829 & 0.786 & 1.06 & 0.043 \\ 
+  Env & Government spending (more) & Median & 1.000 & 1.000 & 1.00 & 0.000 \\ 
+  Env & Government spending (more) & SD & 0.329 & 0.325 & 1.01 & 0.004 \\ 
+  Env & Regulation (stricter) & Mean & 0.776 & 0.697 & 1.11 & 0.079 \\ 
+  Env & Regulation (stricter) & Median & 1.000 & 0.750 & 1.33 & 0.250 \\ 
+  Env & Regulation (stricter) & SD & 0.380 & 0.292 & 1.30 & 0.088 \\ 
+  Immi & Admit fewer immigrants & Mean & 0.535 & 0.645 & 0.83 & -0.110 \\ 
+  Immi & Admit fewer immigrants & Median & 0.500 & 0.750 & 0.67 & -0.250 \\ 
+  Immi & Admit fewer immigrants & SD & 0.289 & 0.268 & 1.08 & 0.021 \\ 
+  Immi & Immigrants don't fit in & Mean & 0.330 & 0.294 & 1.12 & 0.036 \\ 
+  Immi & Immigrants don't fit in & Median & 0.250 & 0.250 & 1.00 & 0.000 \\ 
+  Immi & Immigrants don't fit in & SD & 0.314 & 0.281 & 1.12 & 0.033 \\ 
+  Immi & Immigrants take jobs & Mean & 0.090 & 0.167 & 0.54 & -0.077 \\ 
+  Immi & Immigrants take jobs & Median & 0.000 & 0.000 &  & 0.000 \\ 
+  Immi & Immigrants take jobs & SD & 0.208 & 0.208 & 1.00 & 0.000 \\ 
+  Immi & Immigration spending (less) & Mean & 0.402 & 0.472 & 0.85 & -0.069 \\ 
+  Immi & Immigration spending (less) & Median & 0.500 & 0.500 & 1.00 & 0.000 \\ 
+  Immi & Immigration spending (less) & SD & 0.413 & 0.362 & 1.14 & 0.052 \\ 
+  Immi & Stricter border control & Mean & 0.493 & 0.592 & 0.83 & -0.099 \\ 
+  Immi & Stricter border control & Median & 0.667 & 0.667 & 1.00 & 0.000 \\ 
+  Immi & Stricter border control & SD & 0.270 & 0.316 & 0.85 & -0.047 \\ 
+   \bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\clearpage
+
+\section{Response Format Effects on Political Attitudes}
+\label{appendix-descriptive-effects}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{response_format_comparison_3x4.png}
+  \caption{Density Distribution Comparing Open-Ended vs. Close-Ended Survey Responses}
+  \label{fig-appendix-descriptive-effects}
+\end{figure}
+
+\clearpage
+
+\section{Subgroups Analysis}
+\label{appendix-subgroups}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    \textbf{SES Variable} & \textbf{Environment Scale} & \textbf{Immigration Scale} \\
+    \midrule
+    Age (continuous) & F=1.1, p=0.295 & F=5.87, p=0.016 \\
+    Gender (female) & F=1.3, p=0.254 & F=0.42, p=0.515 \\
+    Education & F=1.69, p=0.12 & F=1.05, p=0.394 \\
+    Income & F=0.59, p=0.762 & F=1.07, p=0.379 \\
+    Language & F=0.16, p=0.854 & F=1.28, p=0.278 \\
+    Province & F=1.15, p=0.318 & F=1.68, p=0.079 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Robustness checks: Treatment × Subgroup interactions}
+  \label{table-robustness}
+\end{table}
+
+\noindent\textit{Note:} Non-significant interactions indicate treatment effects are stable across subgroups.
+
