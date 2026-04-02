@@ -95,7 +95,7 @@ immi_scale_open <- calc_scale(immi_open_data)
 
 <br><br>
 
-[École de méthodologie CÉCD| 2025]{style="font-size: 0.6em; color: #666;"}
+[RDV de la science politique| 2026]{style="font-size: 0.6em; color: #666;"}
 
 :::
 
