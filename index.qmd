@@ -2,7 +2,7 @@
 title: ""
 format:
   revealjs:
-    logo: logo/CSDC_logo.jpg
+    logo: logo/ulaval_logo.png
     theme: [default, custom.scss]
     slide-number: c/t
     transition: slide
